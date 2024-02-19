@@ -4,7 +4,7 @@
 /vendor
 /vendor/*
 
-.env
+# .env
 
 composer.lock
 .vscode/sftp.json
