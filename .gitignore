@@ -1,5 +1,5 @@
-# /storage
-# /storage/*
+/storage
+/storage/*
 
 /vendor
 /vendor/*
@@ -9,5 +9,5 @@
 composer.lock
 .vscode/sftp.json
 
-# package.json
+package.json
 package-lock.json
