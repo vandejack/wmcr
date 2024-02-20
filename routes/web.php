@@ -11,6 +11,8 @@
 |
 */
 
+Route::get('/login', 'LoginController@login')->name('login');
+
 Route::get('/', function () {
     return view('welcome');
 });
