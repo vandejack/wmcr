@@ -19,6 +19,27 @@ Route::get('/reload-captcha', 'LoginController@reloadCaptcha')->name('reload-cap
 Route::get('/auth-verification', 'LoginController@auth_verification')->name('auth-verification');
 Route::post('/auth-verification', 'LoginController@login_post');
 
-Route::get('/', function () {
-    return view('layout');
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/', 'HomeController@index')->name('home');
+
+    Route::get('/profile', 'HomeController@profile')->name('profile');
+
+    Route::prefix('master')->group(function () {
+        Route::get('/regional', 'MasterController@regional');
+        Route::get('/witel', 'MasterController@witel');
+        Route::get('/sto', 'MasterController@sto');
+        Route::get('/mitra', 'MasterController@mitra');
+        Route::get('/level', 'MasterController@level');
+    });
+
+    Route::prefix('employee')->group(function () {
+        Route::get('/', 'EmployeeController@index');
+        Route::get('/unit', 'EmployeeController@unit');
+        Route::get('/sub-unit', 'EmployeeController@sub_unit');
+        Route::get('/sub-group', 'EmployeeController@sub_group');
+        Route::get('/position', 'EmployeeController@position');
+    });
 });
+
+Route::get('/logout', 'LoginController@logout')->name('logout');
