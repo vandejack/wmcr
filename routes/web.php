@@ -12,11 +12,13 @@
 */
 
 Route::get('/login', 'LoginController@login')->name('login');
+Route::post('/login', 'LoginController@login_validate');
+
+Route::get('/reload-captcha', 'LoginController@reloadCaptcha')->name('reload-captcha');
+
+Route::get('/auth-verification', 'LoginController@auth_verification')->name('auth-verification');
+Route::post('/auth-verification', 'LoginController@login_post');
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/layout', function () {
     return view('layout');
 });
