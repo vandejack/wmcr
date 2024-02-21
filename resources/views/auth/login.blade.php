@@ -82,6 +82,9 @@
 		</div>
 		<script src="/assets/plugins/global/plugins.bundle.js"></script>
 		<script src="/assets/js/scripts.bundle.js"></script>
+
+		@include('partial.alerts')
+
 		<script type="text/javascript">
 			var passwordInput = document.querySelector('input[name="password"]');
 			var togglePasswordButton = document.getElementById('togglePassword');

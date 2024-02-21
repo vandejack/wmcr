@@ -8,7 +8,7 @@ date_default_timezone_set("Asia/Makassar");
 
 class LoginModel
 {
-    const TABLE = 'wmcr_employee AS we';
+    const TABLE = 'wmcr_employee';
 
     public static function getAll()
     {
@@ -17,22 +17,22 @@ class LoginModel
 
     public static function getById($id)
     {
-        return DB::table(self::TABLE)->where('we.id', $id)->first();
+        return DB::table(self::TABLE)->where('wmcr_employee.id', $id)->first();
     }
 
     public static function getByToken($token)
     {
         return DB::table(self::TABLE)
-        ->leftJoin('wmcr_master_regional AS wr', 'we.regional_id', '=', 'wr.id')
-        ->leftJoin('wmcr_master_witel AS wmw', 'we.witel_id', '=', 'wmw.id')
-        ->leftJoin('wmcr_master_mitra AS wmm', 'we.mitra_id', '=', 'wmm.id')
-        ->leftJoin('wmcr_employee_unit AS weu', 'we.unit_id', '=', 'weu.id')
-        ->leftJoin('wmcr_employee_sub_unit AS wesu', 'we.sub_unit_id', '=', 'wesu.id')
-        ->leftJoin('wmcr_employee_sub_group AS wesg', 'we.sub_group_id', '=', 'wesg.id')
-        ->leftJoin('wmcr_employee_position AS wep', 'we.position_id', '=', 'wep.id')
-        ->leftJoin('wmcr_master_level AS wml', 'we.level_id', '=', 'wml.id')
-        ->select('we.*', 'wr.name AS regional_name', 'wmw.name AS witel_name', 'wmm.name AS mitra_name', 'weu.name AS unit_name', 'wesu.name AS sub_unit_name', 'wesg.name AS sub_group_name', 'wep.name AS position_name', 'wml.name AS level_name')
-        ->where('we.token', $token)
+        ->leftJoin('wmcr_master_regional', 'wmcr_employee.regional_id', '=', 'wmcr_master_regional.id')
+        ->leftJoin('wmcr_master_witel', 'wmcr_employee.witel_id', '=', 'wmcr_master_witel.id')
+        ->leftJoin('wmcr_master_mitra', 'wmcr_employee.mitra_id', '=', 'wmcr_master_mitra.id')
+        ->leftJoin('wmcr_employee_unit', 'wmcr_employee.unit_id', '=', 'wmcr_employee_unit.id')
+        ->leftJoin('wmcr_employee_sub_unit', 'wmcr_employee.sub_unit_id', '=', 'wmcr_employee_sub_unit.id')
+        ->leftJoin('wmcr_employee_sub_group', 'wmcr_employee.sub_group_id', '=', 'wmcr_employee_sub_group.id')
+        ->leftJoin('wmcr_employee_position', 'wmcr_employee.position_id', '=', 'wmcr_employee_position.id')
+        ->leftJoin('wmcr_master_level', 'wmcr_employee.level_id', '=', 'wmcr_master_level.id')
+        ->select('wmcr_employee.*', 'wmcr_master_regional.name AS regional_name', 'wmcr_master_witel.name AS witel_name', 'wmcr_master_mitra.name AS mitra_name', 'wmcr_employee_unit.name AS unit_name', 'wmcr_employee_sub_unit.name AS sub_unit_name', 'wmcr_employee_sub_group.name AS sub_group_name', 'wmcr_employee_position.name AS position_name', 'wmcr_master_level.name AS level_name')
+        ->where('wmcr_employee.token', $token)
         ->first();
     }
 
@@ -40,8 +40,8 @@ class LoginModel
     {
         return DB::table(self::TABLE)
         ->where([
-            ['we.nik', $nik],
-            ['we.password', MD5($pwd)]
+            ['wmcr_employee.nik', $nik],
+            ['wmcr_employee.password', MD5($pwd)]
         ])
         ->first();
     }
@@ -50,9 +50,9 @@ class LoginModel
     {
         return DB::table(self::TABLE)
         ->where([
-            ['we.id', $id],
-            ['we.password', $pwd],
-            ['we.otp_code', $otp]
+            ['wmcr_employee.id', $id],
+            ['wmcr_employee.password', $pwd],
+            ['wmcr_employee.otp_code', $otp]
         ])
         ->first();
     }
@@ -64,12 +64,12 @@ class LoginModel
 
     public static function update($id, $input)
     {
-        DB::table(self::TABLE)->where('we.id', $id)->update($input);
+        DB::table(self::TABLE)->where('wmcr_employee.id', $id)->update($input);
     }
 
     public static function delete($id)
     {
-        DB::table(self::TABLE)->where('we.id', $id)->delete();
+        DB::table(self::TABLE)->where('wmcr_employee.id', $id)->delete();
     }
 
     public static function setToken($id, $token)
@@ -105,7 +105,7 @@ class LoginModel
             $ip_address = 'UNKNOWN';
         }
 
-        DB::table(self::TABLE)->where('we.id', $id)
+        DB::table(self::TABLE)->where('wmcr_employee.id', $id)
         ->update([
             'token'      => $token,
             'ip_address' => $ip_address,

@@ -74,7 +74,7 @@ class LoginController extends Controller
         if ($validator->fails())
         {
             return redirect('/login')->with('alerts', [
-                ['type' => 'danger', 'text' => 'Invalid or Expired Captcha!']
+                ['type' => 'error', 'text' => 'Invalid or Expired Captcha!']
             ]);
         }
 
@@ -85,14 +85,14 @@ class LoginController extends Controller
             if ($data->is_status == 0)
             {
                 return back()->with('alerts', [
-                    ['type' => 'danger', 'text' => 'User is <strong>Disabled!</strong>']
+                    ['type' => 'error', 'text' => 'User is <strong>Disabled!</strong>']
                 ]);
             }
 
             if ($data->chat_id == null || $data->chat_id == '' | $data->chat_id == 0)
             {
                 return back()->with('alerts', [
-                    ['type' => 'danger', 'text' => 'Please Check Your <strong>Chat ID!</strong>']
+                    ['type' => 'error', 'text' => 'Please Check Your <strong>Chat ID!</strong>']
                 ]);
 
                 $token = $data->token;
@@ -132,7 +132,7 @@ class LoginController extends Controller
         else
         {
             return back()->with('alerts', [
-                ['type' => 'danger', 'text' => 'NIK atau Password Salah!']
+                ['type' => 'error', 'text' => 'NIK atau Password Salah!']
             ]);
         }
     }
@@ -145,7 +145,7 @@ class LoginController extends Controller
         if (date('Y-m-d H:i:s') > $otp_valid_until)
         {
             return redirect('/login')->with('alerts', [
-                ['type' => 'danger', 'text' => 'Your OTP Code is <strong>Expired in 1 Minutes!</strong>']
+                ['type' => 'error', 'text' => 'Your OTP Code is <strong>Expired in 1 Minutes!</strong>']
             ]);
         }
 
@@ -156,7 +156,7 @@ class LoginController extends Controller
             if ($data->is_status == 0)
             {
                 return back()->with('alerts', [
-                    ['type' => 'danger', 'text' => 'User is <strong>Disabled!</strong>']
+                    ['type' => 'error', 'text' => 'User is <strong>Disabled!</strong>']
                 ]);
             }
 
@@ -193,7 +193,7 @@ class LoginController extends Controller
         else
         {
             return back()->with('alerts', [
-                ['type' => 'danger', 'text' => 'Invalid <strong>OTP Code!</strong>']
+                ['type' => 'error', 'text' => 'Invalid <strong>OTP Code!</strong>']
             ]);
         }
     }
