@@ -6,6 +6,8 @@ date_default_timezone_set('Asia/Makassar');
 
 class Telegram
 {
+    const t0k3n = '7001728932:AAGZj6VGtqVTV00huMfyKjYROyVOem4YVyE';
+
     public static function sendMessage($chatID, $message)
     {
         $text = urlencode($message);
@@ -13,7 +15,7 @@ class Telegram
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL            => "https://api.telegram.org/bot7001728932:AAGZj6VGtqVTV00huMfyKjYROyVOem4YVyE/sendmessage?chat_id=$chatID&text=$text&parse_mode=HTML",
+            CURLOPT_URL            => "https://api.telegram.org/bot".self::t0k3n."/sendmessage?chat_id=$chatID&text=$text&parse_mode=HTML",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING       => "",
             CURLOPT_MAXREDIRS      => 10,
@@ -37,7 +39,7 @@ class Telegram
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL            => "https://api.telegram.org/bot7001728932:AAGZj6VGtqVTV00huMfyKjYROyVOem4YVyE/sendmessage?chat_id=$chatID&text=$text&parse_mode=HTML&reply_to_message_id=$messageID",
+            CURLOPT_URL            => "https://api.telegram.org/bot".self::t0k3n."/sendmessage?chat_id=$chatID&text=$text&parse_mode=HTML&reply_to_message_id=$messageID",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING       => "",
             CURLOPT_MAXREDIRS      => 10,
@@ -59,7 +61,7 @@ class Telegram
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL            => "https://api.telegram.org/bot7001728932:AAGZj6VGtqVTV00huMfyKjYROyVOem4YVyE/sendPhoto",
+            CURLOPT_URL            => "https://api.telegram.org/bot".self::t0k3n."/sendPhoto",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING       => "",
             CURLOPT_MAXREDIRS      => 10,
