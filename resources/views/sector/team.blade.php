@@ -27,7 +27,7 @@
 </style>
 @endsection
 
-@section('title', 'STO Data')
+@section('title', 'Team Data')
 
 @section('content')
 <div class="card shadow-sm">
@@ -37,24 +37,20 @@
                 <thead class="table-light">
                     <tr class="fw-bold fs-6 text-muted text-center">
                         <th style="width: 5%">#</th>
-                        <th>Regional</th>
-                        <th>Witel</th>
-                        <th>Name</th>
-                        <th>Action</th>
+                        <th>Sector</th>
+                        <th>Team</th>
+                        <th>Technician 1</th>
+                        <th>Technician 2</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($data as $k => $v)
                     <tr class="text-center">
                         <td>{{ ++$k }}</td>
-                        <td>{{ $v->regional_name }}</td>
-                        <td>{{ $v->witel_name }}</td>
-                        <td>{{ $v->name ?? '-' }}</td>
-                        <td>
-                            <a href="/master/sto/edit/{{ $v->id }}" type="button" class="btn btn-icon btn-sm btn-primary btn-rounded text-center">
-								<i class="fa fa-edit" aria-hidden="true"></i>
-							</a>
-                        </td>
+                        <td>{{ $v->sector_name }}</td>
+                        <td>{{ $v->name }}</td>
+                        <td>{{ $v->technician1_name }} ({{ $v->technician1 }})</td>
+                        <td>{{ $v->technician2_name }} ({{ $v->technician2 }})</td>
                     </tr>
                     @endforeach
                 </tbody>

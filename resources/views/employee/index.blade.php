@@ -48,6 +48,7 @@
                         <th>Sub Group</th>
                         <th>Position</th>
                         <th>Level</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,6 +66,11 @@
                         <td>{{ $v->sub_group_name }}</td>
                         <td>{{ $v->position_name }}</td>
                         <td>{{ $v->level_name }}</td>
+                        <td>
+                            <a href="/employee/edit/{{ $v->nik }}" type="button" class="btn btn-icon btn-sm btn-primary btn-rounded text-center">
+								<i class="fa fa-edit" aria-hidden="true"></i>
+							</a>
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -29,16 +29,28 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/regional', 'MasterController@regional');
         Route::get('/witel', 'MasterController@witel');
         Route::get('/sto', 'MasterController@sto');
+        Route::get('/sto/edit/{id}', 'MasterController@sto');
         Route::get('/mitra', 'MasterController@mitra');
         Route::get('/level', 'MasterController@level');
     });
 
     Route::prefix('employee')->group(function () {
         Route::get('/', 'EmployeeController@index');
+        Route::get('/edit/{id}', 'EmployeeController@edit');
         Route::get('/unit', 'EmployeeController@unit');
         Route::get('/sub-unit', 'EmployeeController@sub_unit');
         Route::get('/sub-group', 'EmployeeController@sub_group');
         Route::get('/position', 'EmployeeController@position');
+    });
+
+    Route::prefix('sector')->group(function () {
+        Route::get('/', 'SectorController@index');
+        Route::get('/rayon', 'SectorController@rayon');
+        Route::get('/team', 'SectorController@team');
+        Route::get('/alpro', 'SectorController@alpro');
+        Route::get('/schedule', 'SectorController@schedule');
+        Route::get('/brifieng', 'SectorController@brifieng');
+        Route::get('/alker', 'SectorController@alker');
     });
 });
 
