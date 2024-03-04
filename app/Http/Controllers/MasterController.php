@@ -13,37 +13,27 @@ class MasterController extends Controller
 {
     public function regional()
     {
-        $data = MasterModel::show('regional');
-
-        return view('master.regional', compact('data'));
+        return view('master.regional');
     }
 
     public function witel()
     {
-        $data = MasterModel::show('witel');
-
-        return view('master.witel', compact('data'));
+        return view('master.witel');
     }
 
     public function sto()
     {
-        $data = MasterModel::show('sto');
-
-        return view('master.sto', compact('data'));
+        return view('master.sto');
     }
 
     public function mitra()
     {
-        $data = MasterModel::show('mitra');
-
-        return view('master.mitra', compact('data'));
+        return view('master.mitra');
     }
 
     public function level()
     {
-        $data = MasterModel::show('level');
-
-        return view('master.level', compact('data'));
+        return view('master.level');
     }
 }
 ?>

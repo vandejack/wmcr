@@ -16,7 +16,7 @@ class SectorModel
                     ->leftJoin('wmcr_employee AS weo1', 'ws.owner1', '=', 'weo1.nik')
                     ->leftJoin('wmcr_employee AS weo2', 'ws.owner2', '=', 'weo2.nik')
                     ->leftJoin('wmcr_sector_rayon AS wcr', 'ws.rayon_id', '=', 'wcr.id')
-                    ->select('ws.*', 'weo1.name AS owner1_name', 'weo2.name AS owner2_name');
+                    ->select('ws.*', 'weo1.name AS owner1_name', 'weo2.name AS owner2_name', 'wcr.name AS rayon_name');
                 break;
             
             case 'rayon':
@@ -49,7 +49,7 @@ class SectorModel
                 break;
 
             case 'alker':
-                # code...
+                    # code...
                 break;
         }
 

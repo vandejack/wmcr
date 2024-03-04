@@ -33,10 +33,10 @@
 <div class="card shadow-sm">
 	<div class="card-body pb-0">
         <div class="table-responsive">
-            <table class="table table-hover table-row-bordered gy-5 gs-7 border rounded w-100">
-                <thead class="table-light">
-                    <tr class="fw-bold fs-6 text-muted text-center">
-                        <th style="width: 5%">#</th>
+            <table class="table table-hover table-row-bordered gy-5 border rounded w-100">
+                <thead>
+                    <tr class="fw-bold fs-6 text-gray-800 px-7 text-center">
+                        <th>#</th>
                         <th>NIK</th>
                         <th>Name</th>
                         <th>Chat ID</th>
@@ -51,29 +51,6 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($data as $k => $v)
-                    <tr class="text-center">
-                        <td>{{ ++$k }}</td>
-                        <td>{{ $v->nik }}</td>
-                        <td>{{ $v->name }}</td>
-                        <td>{{ $v->chat_id }}</td>
-                        <td>{{ $v->regional_name }}</td>
-                        <td>{{ $v->witel_name }}</td>
-                        <td>{{ $v->mitra_name }}</td>
-                        <td>{{ $v->unit_name }}</td>
-                        <td>{{ $v->sub_unit_name }}</td>
-                        <td>{{ $v->sub_group_name }}</td>
-                        <td>{{ $v->position_name }}</td>
-                        <td>{{ $v->level_name }}</td>
-                        <td>
-                            <a href="/employee/edit/{{ $v->nik }}" type="button" class="btn btn-icon btn-sm btn-primary btn-rounded text-center">
-								<i class="fa fa-edit" aria-hidden="true"></i>
-							</a>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
             </table>
         </div>
     </div>
@@ -100,7 +77,10 @@
 					">",
 			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 			"pageLength": 10,
-			"pagingType": "full_numbers"
+			"pagingType": "full_numbers",
+            "ajax": {
+				"url": `/ajax/employee/list`
+			}
 		});
     });
 </script>

@@ -13,51 +13,37 @@ class SectorController extends Controller
 {
     public function index()
     {
-        $data = SectorModel::show('list');
-
-        return view('sector.index', compact('data'));
+        return view('sector.index');
     }
 
     public function rayon()
     {
-        $data = SectorModel::show('rayon');
-
-        return view('sector.rayon', compact('data'));
+        return view('sector.rayon');
     }
 
     public function team()
     {
-        $data = SectorModel::show('team');
-
-        return view('sector.team', compact('data'));
+        return view('sector.team');
     }
 
     public function alpro()
     {
-        $data = SectorModel::show('alpro');
-
-        return view('sector.alpro', compact('data'));
+        return view('sector.alpro');
     }
 
     public function schedule()
     {
-        $data = SectorModel::show('schedule');
-
-        return view('sector.schedule', compact('data'));
+        return view('sector.schedule');
     }
 
     public function brifieng()
     {
-        $data = SectorModel::show('brifieng');
-
-        return view('sector.brifieng', compact('data'));
+        return view('sector.brifieng');
     }
 
     public function alker()
     {
-        // $data = SectorModel::show('alker');
-
-        return view('sector.alker', compact('data'));
+        return view('sector.alker');
     }
 }
 ?>

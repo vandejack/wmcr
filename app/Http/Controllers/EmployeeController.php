@@ -13,37 +13,27 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $data = EmployeeModel::show('list');
-
-        return view('employee.index', compact('data'));
+        return view('employee.index');
     }
 
     public function unit()
     {
-        $data = EmployeeModel::show('unit');
-
-        return view('employee.unit', compact('data'));
+        return view('employee.unit');
     }
 
     public function sub_unit()
     {
-        $data = EmployeeModel::show('sub_unit');
-
-        return view('employee.sub_unit', compact('data'));
+        return view('employee.sub_unit');
     }
 
     public function sub_group()
     {
-        $data = EmployeeModel::show('sub_group');
-
-        return view('employee.sub_group', compact('data'));
+        return view('employee.sub_group');
     }
 
     public function position()
     {
-        $data = EmployeeModel::show('position');
-
-        return view('employee.position', compact('data'));
+        return view('employee.position');
     }
 }
 ?>

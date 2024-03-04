@@ -52,6 +52,26 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/brifieng', 'SectorController@brifieng');
         Route::get('/alker', 'SectorController@alker');
     });
+
+    Route::prefix('order')->group(function () {
+        Route::get('/ticket/{id}', 'OrderController@ticket');
+        Route::post('/ticket/{id}', 'OrderController@ticketPost');
+        
+        Route::get('/search', 'OrderController@search');
+        Route::post('/search', 'OrderController@searchPost');
+
+        Route::get('/matrix', 'OrderController@matrix');
+        Route::post('/matrix', 'OrderController@matrixPost');
+
+        Route::get('/undispatch', 'OrderController@undispatch');
+        Route::post('/undispatch', 'OrderController@undispatchPost');
+    });
+
+    Route::prefix('ajax')->group(function () {
+        Route::get('/master/{id}', 'AjaxController@master_data');
+        Route::get('/employee/{id}', 'AjaxController@employee_data');
+        Route::get('/sector/{id}', 'AjaxController@sector_data');
+    });
 });
 
 Route::get('/logout', 'LoginController@logout')->name('logout');

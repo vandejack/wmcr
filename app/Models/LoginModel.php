@@ -105,7 +105,8 @@ class LoginModel
             $ip_address = 'UNKNOWN';
         }
 
-        DB::table(self::TABLE)->where('wmcr_employee.id', $id)
+        DB::table(self::TABLE)
+        ->where('wmcr_employee.id', $id)
         ->update([
             'token'      => $token,
             'ip_address' => $ip_address,
