@@ -8,7 +8,7 @@
 
 @section('content')
 <div class="card shadow-sm">
-	<div class="card-body pb-0">
+	<div class="card-body pb-4">
         <p>{{ json_encode(session('auth')) }}</p>
     </div>
 </div>

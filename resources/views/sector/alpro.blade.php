@@ -31,7 +31,7 @@
 
 @section('content')
 <div class="card shadow-sm">
-	<div class="card-body pb-0">
+	<div class="card-body pb-4">
         <div class="table-responsive">
             <table class="table table-hover table-row-bordered gy-5 border rounded w-100">
                 <thead>
@@ -68,6 +68,7 @@
 			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 			"pageLength": 10,
 			"pagingType": "full_numbers",
+            "ordering": false,
             "ajax": {
 				"url": `/ajax/sector/alpro`
 			}

@@ -30,7 +30,7 @@ class AjaxController extends Controller
                 break;
             
             case 'sto':
-                    $columns = ['regional_name', 'witel_name', 'name'];
+                    $columns = ['regional_name', 'witel_name', 'name', 'datel'];
                 break;
 
             case 'mitra':

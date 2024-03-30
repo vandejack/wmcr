@@ -31,7 +31,7 @@
 
 @section('content')
 <div class="card shadow-sm">
-	<div class="card-body pb-0">
+	<div class="card-body pb-4">
         <div class="table-responsive">
             <table class="table table-hover table-row-bordered gy-5 border rounded w-100">
                 <thead>
