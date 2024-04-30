@@ -40,14 +40,6 @@
                         <th>Name</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($data as $k => $v)
-                    <tr class="text-center">
-                        <td>{{ ++$k }}</td>
-                        <td>{{ $v->name }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
             </table>
         </div>
     </div>
@@ -74,7 +66,11 @@
 					">",
 			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 			"pageLength": 10,
-			"pagingType": "full_numbers"
+			"pagingType": "full_numbers",
+            "ordering": true,
+            "ajax": {
+				"url": `/ajax/employee/unit`
+			}
 		});
     });
 </script>

@@ -273,14 +273,6 @@
 																	<span class="menu-title">Mitra</span>
 																</a>
 															</div>
-															<div class="menu-item">
-																<a class="menu-link py-3" href="/master/level">
-																	<span class="menu-bullet">
-																		<span class="bullet bullet-dot"></span>
-																	</span>
-																	<span class="menu-title">Level</span>
-																</a>
-															</div>
 														</div>
 													</div>
 													<div data-kt-menu-trigger="{default:'click', lg: 'hover'}" data-kt-menu-placement="right-start" class="menu-item menu-lg-down-accordion">
@@ -432,8 +424,10 @@
 															<img alt="Logo" src="/assets/media/avatars/blank.png" />
 														</div>
 														<div class="d-flex flex-column">
-															<div class="fw-bolder d-flex align-items-center fs-5">{{ session('auth')->name }}
-															<span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">{{ session('auth')->nik }}</span></div>
+															<div class="fw-bolder d-flex align-items-center fs-8">{{ session('auth')->name }}
+																{{-- <span class="badge badge-light-success fw-bolder fs-9 px-2 py-1 ms-2">{{ session('auth')->level_name }}</span> --}}
+															</div>
+															<a class="fw-bold text-muted text-hover-primary fs-8">{{ session('auth')->nik }}</a>
 															<a class="fw-bold text-muted text-hover-primary fs-8">{{ session('auth')->mitra_name }}</a>
 															<a class="fw-bold text-muted text-hover-primary fs-8">{{ session('auth')->position_name }}</a>
 														</div>
@@ -492,8 +486,8 @@
 					<div class="footer py-4 d-flex flex-lg-column" id="kt_footer">
 						<div class="container-xxl d-flex flex-column flex-md-row align-items-center justify-content-between">
 							<div class="text-dark order-2 order-md-1">
-								<span class="text-muted fw-bold me-1">©{{ date('Y') }}</span>
-								<a class="text-gray-800 text-hover-primary">Workforce Management Common Resources</a>
+								<span class="text-muted fw-bold me-1">©{{ date('Y') }} Workforce Management Common Resources</span>
+								{{-- <a class="text-gray-800 text-hover-primary">Workforce Management Common Resources</a> --}}
 							</div>
 						</div>
 					</div>

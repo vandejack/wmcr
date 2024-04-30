@@ -15,10 +15,5 @@ class HomeController extends Controller
     {
         return view('home.index');
     }
-
-    public function profile()
-    {
-        return view('home.profile');
-    }
 }
 ?>

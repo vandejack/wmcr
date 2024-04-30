@@ -31,7 +31,20 @@ class LoginModel
         ->leftJoin('wmcr_employee_sub_group', 'wmcr_employee.sub_group_id', '=', 'wmcr_employee_sub_group.id')
         ->leftJoin('wmcr_employee_position', 'wmcr_employee.position_id', '=', 'wmcr_employee_position.id')
         ->leftJoin('wmcr_master_level', 'wmcr_employee.level_id', '=', 'wmcr_master_level.id')
-        ->select('wmcr_employee.*', 'wmcr_master_regional.name AS regional_name', 'wmcr_master_witel.name AS witel_name', 'wmcr_master_mitra.name AS mitra_name', 'wmcr_employee_unit.name AS unit_name', 'wmcr_employee_sub_unit.name AS sub_unit_name', 'wmcr_employee_sub_group.name AS sub_group_name', 'wmcr_employee_position.name AS position_name', 'wmcr_master_level.name AS level_name')
+        ->leftJoin('wmcr_employee_timezone', 'wmcr_employee.timezone_id', '=', 'wmcr_employee_timezone.id')
+        ->select(
+            'wmcr_employee.*',
+            'wmcr_master_regional.name AS regional_name',
+            'wmcr_master_witel.name AS witel_name',
+            'wmcr_master_witel.aliases AS witel_aliases',
+            'wmcr_master_mitra.name AS mitra_name',
+            'wmcr_employee_unit.name AS unit_name',
+            'wmcr_employee_sub_unit.name AS sub_unit_name',
+            'wmcr_employee_sub_group.name AS sub_group_name',
+            'wmcr_employee_position.name AS position_name',
+            'wmcr_master_level.name AS level_name',
+            'wmcr_employee_timezone.text AS timezone_name'
+        )
         ->where('wmcr_employee.token', $token)
         ->first();
     }

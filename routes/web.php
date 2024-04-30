@@ -23,7 +23,8 @@ Route::post('/auth-verification', 'LoginController@login_post');
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'HomeController@index')->name('home');
 
-    Route::get('/profile', 'HomeController@profile')->name('profile');
+    Route::get('/profile', 'EmployeeController@profile')->name('profile');
+    Route::post('/profile', 'EmployeeController@profile_post');
 
     Route::prefix('master')->group(function () {
         Route::get('/regional', 'MasterController@regional');
@@ -55,22 +56,32 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::prefix('order')->group(function () {
         Route::get('/ticket/{id}', 'OrderController@ticket');
-        Route::post('/ticket/{id}', 'OrderController@ticketPost');
+        Route::post('/ticket/{id}', 'OrderController@ticket_post');
         
         Route::get('/search', 'OrderController@search');
-        Route::post('/search', 'OrderController@searchPost');
+        Route::post('/search', 'OrderController@search_post');
 
         Route::get('/matrix', 'OrderController@matrix');
-        Route::post('/matrix', 'OrderController@matrixPost');
+        Route::post('/matrix', 'OrderController@matrix_post');
 
         Route::get('/undispatch', 'OrderController@undispatch');
-        Route::post('/undispatch', 'OrderController@undispatchPost');
+        Route::post('/undispatch', 'OrderController@undispatch_post');
+
+        Route::get('/undispatch-detail', 'OrderController@undispatch_detail');
     });
 
     Route::prefix('ajax')->group(function () {
         Route::get('/master/{id}', 'AjaxController@master_data');
         Route::get('/employee/{id}', 'AjaxController@employee_data');
         Route::get('/sector/{id}', 'AjaxController@sector_data');
+
+        Route::get('/select2/{id}/{x}', 'AjaxController@select_data');
+
+        Route::prefix('order')->group(function () {
+            Route::get('/undispatch/{start_date}/{end_date}', 'AjaxController@undispatch_order');
+            Route::get('/undispatch-detail', 'AjaxController@undispatch_detail');
+            Route::get('/undispatch-search/{order}/{id}', 'AjaxController@undispatch_search');
+        });
     });
 });
 

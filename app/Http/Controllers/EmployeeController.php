@@ -35,5 +35,21 @@ class EmployeeController extends Controller
     {
         return view('employee.position');
     }
+
+    public function profile()
+    {
+        $data = EmployeeModel::profile_data();
+
+        return view('employee.profile', compact('data'));
+    }
+
+    public function profile_post(Request $req)
+    {
+        EmployeeModel::profile_post($req);
+
+        return redirect('/profile')->with('alerts', [
+            ['type' => 'success', 'text' => 'Berhasil Simpan Data Profile!']
+        ]);
+    }
 }
 ?>

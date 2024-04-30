@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use App\Models\EmployeeModel;
 use App\Models\MasterModel;
 use App\Models\SectorModel;
-use Illuminate\Support\Facades\DB;
+use App\Models\OrderModel;
 
 date_default_timezone_set("Asia/Makassar");
 
@@ -215,6 +217,254 @@ class AjaxController extends Controller
             array_unshift($rowData, ++$k);
             $result['data'][] = $rowData;
         }
+
+        return response()->json($result);
+    }
+
+    public function select_data(Request $req, $id, $x)
+    {
+        $search = trim($req->searchTerm);
+
+        switch ($id) {
+            case 'sector':
+                    $data = DB::table('wmcr_sector')->where([ ['is_active', 1], ['witel_id', session('auth')->witel_id] ])->select('id', 'name as text');
+
+                    if ($search)
+                    {
+                        $data->Where('name', 'LIKE', "%$search%");
+                    }
+
+                    $data = $data->orderBy('urut', 'ASC')->get();
+                break;
+
+            case 'team':
+                # code...
+                break;
+            
+            case 'timezone':
+                    $data = DB::table('wmcr_employee_timezone');
+
+                    if ($search)
+                    {
+                        $data->Where('text', 'LIKE', "%$search%");
+                    }
+
+                    $data = $data->get();
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        return response()->json($data);
+    }
+
+    public function undispatch_order($start_date, $end_date)
+    {
+        $jml_provisioning = $ttl_order_survey = $ttl_order_ao = $ttl_order_mo = $ttl_order_pda = $ttl_provisioning = $jml_assurance = $ttl_order_b2c = $ttl_order_b2b = $ttl_order_proactive = $ttl_assurance = $jml_maintenance = $ttl_order_non_warranty = $ttl_order_warranty = $ttl_maintenance = $jumlah = $k = 0;
+        $total = 0;
+
+        $data = OrderModel::undispatch_post($start_date, $end_date);
+        $result = ['data' => [], 'footer' => []];
+
+        foreach ($data as $area => $v)
+        {
+            $jml_provisioning       =  @$v['order_survey'] + @$v['order_ao'] + @$v['order_mo'] + @$v['order_pda'];
+            $ttl_order_survey       += @$v['order_survey'];
+            $ttl_order_ao           += @$v['order_ao'];
+            $ttl_order_mo           += @$v['order_mo'];
+            $ttl_order_pda          += @$v['order_pda'];
+            $ttl_provisioning       += $jml_provisioning;
+
+            $jml_assurance          =  @$v['order_b2c'] + @$v['order_b2b'] + @$v['order_proactive'];
+            $ttl_order_b2c          += @$v['order_b2c'];
+            $ttl_order_b2b          += @$v['order_b2b'];
+            $ttl_order_proactive    += @$v['order_proactive'];
+            $ttl_assurance          += $jml_assurance;
+
+            $jml_maintenance        =  @$v['order_non_warranty'] + @$v['order_warranty'];
+            $ttl_order_non_warranty += @$v['order_non_warranty'];
+            $ttl_order_warranty     += @$v['order_warranty'];
+            $ttl_maintenance        += $jml_maintenance;
+
+            $jumlah                 =  ($jml_provisioning + $jml_assurance + $jml_maintenance);
+            $total                  += $jumlah;
+ 
+            $result['data'][$k][] = $area;
+            $result['data'][$k][] = '<a href="/order/undispatch-detail?area='.$area.'&order=order_survey&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format(@$v['order_survey'])).'</a>';
+            $result['data'][$k][] = '<a href="/order/undispatch-detail?area='.$area.'&order=order_ao&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format(@$v['order_ao'])).'</a>';
+            $result['data'][$k][] = '<a href="/order/undispatch-detail?area='.$area.'&order=order_mo&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format(@$v['order_mo'])).'</a>';
+            $result['data'][$k][] = '<a href="/order/undispatch-detail?area='.$area.'&order=order_pda&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format(@$v['order_pda'])).'</a>';
+            $result['data'][$k][] = str_replace(',', '.', number_format($jml_provisioning));
+            $result['data'][$k][] = '<a href="/order/undispatch-detail?area='.$area.'&order=order_b2c&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format(@$v['order_b2c'])).'</a>';
+            $result['data'][$k][] = '<a href="/order/undispatch-detail?area='.$area.'&order=order_b2b&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format(@$v['order_b2b'])).'</a>';
+            $result['data'][$k][] = '<a href="/order/undispatch-detail?area='.$area.'&order=order_proactive&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format(@$v['order_proactive'])).'</a>';
+            $result['data'][$k][] = str_replace(',', '.', number_format($jml_assurance));
+            $result['data'][$k][] = '<a href="/order/undispatch-detail?area='.$area.'&order=order_non_warranty&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format(@$v['order_non_warranty'])).'</a>';
+            $result['data'][$k][] = '<a href="/order/undispatch-detail?area='.$area.'&order=order_warranty&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format(@$v['order_warranty'])).'</a>';
+            $result['data'][$k][] = str_replace(',', '.', number_format($jml_maintenance));
+            $result['data'][$k][] = str_replace(',', '.', number_format($jumlah));
+
+            $k++;
+        }
+
+        $result['footer'][] = '<b><a href="/order/undispatch-detail?area=all&order=order_survey&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format($ttl_order_survey)).'</a></b>';
+        $result['footer'][] = '<b><a href="/order/undispatch-detail?area=all&order=order_ao&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format($ttl_order_ao)).'</a></b>';
+        $result['footer'][] = '<b><a href="/order/undispatch-detail?area=all&order=order_mo&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format($ttl_order_mo)).'</a></b>';
+        $result['footer'][] = '<b><a href="/order/undispatch-detail?area=all&order=order_pda&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format($ttl_order_pda)).'</a></b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_provisioning)).'</b>';
+        $result['footer'][] = '<b><a href="/order/undispatch-detail?area=all&order=order_b2c&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format($ttl_order_b2c)).'</a></b>';
+        $result['footer'][] = '<b><a href="/order/undispatch-detail?area=all&order=order_b2b&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format($ttl_order_b2b)).'</a></b>';
+        $result['footer'][] = '<b><a href="/order/undispatch-detail?area=all&order=order_proactive&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format($ttl_order_proactive)).'</a></b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_assurance)).'</b>';
+        $result['footer'][] = '<b><a href="/order/undispatch-detail?area=all&order=order_non_warranty&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format($ttl_order_non_warranty)).'</a></b>';
+        $result['footer'][] = '<b><a href="/order/undispatch-detail?area=all&order=order_warranty&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.str_replace(',', '.', number_format($ttl_order_warranty)).'</a></b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_maintenance)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($total)).'</b>';
+
+        return response()->json($result);
+    }
+
+    public function undispatch_detail()
+    {   
+        $area           = Input::get('area');
+        $order          = Input::get('order');
+        $start_date     = Input::get('start_date');
+        $end_date       = Input::get('end_date');
+
+        $result['data'] = [];
+
+        $data           = OrderModel::undispatch_detail($area, $order, $start_date, $end_date);
+        $order_type     = OrderModel::order_type($order);
+
+        foreach ($data as $k => $v)
+        {
+            if (in_array($order, ['order_survey', 'order_ao', 'order_mo', 'order_pda']))
+            {
+                if ($order == 'order_survey')
+                {
+                    $result['data'][] = [
+                        ++$k,
+                        '<a type="button" data-bs-toggle="modal" data-bs-target="#dispatch_data" class="btn btn-sm btn-icon btn-primary btn-rounded btn-hover-scale dispatch_modal" data-order_type_id="'.$order_type->id.'" data-order_data="'.$order.'" data-id_data="'.$v->order_code.'">
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                        </a>',
+                        $v->order_code,
+                        $v->customer_desc,
+                        $v->order_created_date,
+                        $v->customer_name,
+                        $v->customer_phone,
+                        $v->sto,
+                        $v->witel,
+                        $v->myir,
+                        $v->order_type_name,
+                        $v->order_status_name
+                    ];
+                }
+                else if (in_array($order, ['order_ao', 'order_mo', 'order_pda']))
+                {
+                    $result['data'][] = [
+                        ++$k,
+                        '<a type="button" data-bs-toggle="modal" data-bs-target="#dispatch_data" class="btn btn-sm btn-icon btn-primary btn-rounded btn-hover-scale dispatch_modal" data-order_type_id="'.$order_type->id.'" data-order_data="'.$order.'" data-id_data="'.$v->order_id.'">
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                        </a>',
+                        $v->order_id,
+                        $v->order_date,
+                        $v->order_date_ps,
+                        $v->ncli,
+                        $v->customer_name,
+                        $v->witel,
+                        $v->jenis_psb,
+                        $v->sto,
+                        $v->speedy,
+                        $v->pots,
+                        $v->package_name,
+                        $v->status_resume,
+                        $v->customer_addr,
+                        $v->kcontact,
+                        $v->ins_address,
+                        $v->gps_latitude,
+                        $v->gps_longitude,
+                        $v->loc_id
+                    ];
+                }
+            }
+            else if (in_array($order, ['order_b2c', 'order_b2b', 'order_proactive']))
+            {
+                $result['data'][] = [
+                    ++$k,
+                    '<a type="button" data-bs-toggle="modal" data-bs-target="#dispatch_data" class="btn btn-sm btn-icon btn-primary btn-rounded btn-hover-scale dispatch_modal" data-order_type_id="'.$order_type->id.'" data-order_data="'.$order.'" data-id_data="'.$v->incident.'">
+                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                    </a>',
+                    $v->incident,
+                    $v->ttr_customer,
+                    $v->summary,
+                    $v->reported_date,
+                    $v->owner_group,
+                    $v->customer_segment,
+                    $v->service_type,
+                    $v->witel,
+                    $v->workzone,
+                    $v->status,
+                    $v->status_date,
+                    $v->ticket_id_gamas,
+                    $v->contact_phone,
+                    $v->contact_name,
+                    $v->source_ticket,
+                    $v->customer_type,
+                    $v->customer_name,
+                    $v->service_id,
+                    $v->service_no,
+                    $v->device_name,
+                    $v->guarante_status,
+                    $v->resolve_date
+                ];
+            }
+            else if (in_array($order, ['order_non_warranty', 'order_warranty']))
+            {
+                $result['data'][] = [
+                    ++$k,
+                    '<a type="button" data-bs-toggle="modal" data-bs-target="#dispatch_data" class="btn btn-sm btn-icon btn-primary btn-rounded btn-hover-scale dispatch_modal" data-order_type_id="'.$order_type->id.'" data-order_data="'.$order.'" data-id_data="'.$v->nd.'">
+                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                    </a>',
+                    $v->reg,
+                    $v->witel,
+                    $v->sektor,
+                    $v->node_id,
+                    $v->shelf_slot_port_onuid,
+                    $v->fiber_length,
+                    $v->cmdf,
+                    $v->rk,
+                    $v->dp,
+                    $v->nd,
+                    $v->tanggal_ps,
+                    $v->status_inet,
+                    $v->onu_rx_power,
+                    $v->tanggal_ukur,
+                    $v->onu_rx_power_ukur_ulang,
+                    $v->tanggal_ukur_ulang,
+                    $v->nomor_tiket,
+                    $v->status_tiket,
+                    $v->flag_hvc,
+                    $v->type_pelanggan,
+                    $v->prioritas,
+                    $v->jenis,
+                    $v->tanggal_order
+                ];
+            }
+            
+        }
+
+        return response()->json($result);
+    }
+
+    public function undispatch_search($order, $id)
+    {
+        $result['data'] = [];
+
+        $data = OrderModel::undispatch_search($order, $id);
+
+        $result['data'] = $data;
 
         return response()->json($result);
     }

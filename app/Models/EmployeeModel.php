@@ -21,7 +21,17 @@ class EmployeeModel
                     ->leftJoin('wmcr_employee_sub_group', 'wmcr_employee.sub_group_id', '=', 'wmcr_employee_sub_group.id')
                     ->leftJoin('wmcr_employee_position', 'wmcr_employee.position_id', '=', 'wmcr_employee_position.id')
                     ->leftJoin('wmcr_master_level', 'wmcr_employee.level_id', '=', 'wmcr_master_level.id')
-                    ->select('wmcr_employee.*', 'wmcr_master_regional.name AS regional_name', 'wmcr_master_witel.name AS witel_name', 'wmcr_master_mitra.name AS mitra_name', 'wmcr_employee_unit.name AS unit_name', 'wmcr_employee_sub_unit.name AS sub_unit_name', 'wmcr_employee_sub_group.name AS sub_group_name', 'wmcr_employee_position.name AS position_name', 'wmcr_master_level.name AS level_name');
+                    ->select(
+                        'wmcr_employee.*',
+                        'wmcr_master_regional.name AS regional_name',
+                        'wmcr_master_witel.name AS witel_name',
+                        'wmcr_master_mitra.name AS mitra_name',
+                        'wmcr_employee_unit.name AS unit_name',
+                        'wmcr_employee_sub_unit.name AS sub_unit_name',
+                        'wmcr_employee_sub_group.name AS sub_group_name',
+                        'wmcr_employee_position.name AS position_name',
+                        'wmcr_master_level.name AS level_name'
+                    );
                 break;
             
             case 'unit':
@@ -31,7 +41,10 @@ class EmployeeModel
             case 'sub_unit':
                     $data = DB::table('wmcr_employee_sub_unit')
                     ->leftJoin('wmcr_employee_unit', 'wmcr_employee_sub_unit.unit_id', '=', 'wmcr_employee_unit.id')
-                    ->select('wmcr_employee_sub_unit.*', 'wmcr_employee_unit.name AS unit_name');
+                    ->select(
+                        'wmcr_employee_sub_unit.*',
+                        'wmcr_employee_unit.name AS unit_name'
+                    );
                 break;
 
             case 'sub_group':
@@ -44,6 +57,61 @@ class EmployeeModel
         }
 
         return $data->get();
+    }
+
+    public static function profile_data()
+    {
+        return DB::table('wmcr_employee')
+        ->leftJoin('wmcr_master_regional', 'wmcr_employee.regional_id', '=', 'wmcr_master_regional.id')
+        ->leftJoin('wmcr_master_witel', 'wmcr_employee.witel_id', '=', 'wmcr_master_witel.id')
+        ->leftJoin('wmcr_master_mitra', 'wmcr_employee.mitra_id', '=', 'wmcr_master_mitra.id')
+        ->leftJoin('wmcr_employee_unit', 'wmcr_employee.unit_id', '=', 'wmcr_employee_unit.id')
+        ->leftJoin('wmcr_employee_sub_unit', 'wmcr_employee.sub_unit_id', '=', 'wmcr_employee_sub_unit.id')
+        ->leftJoin('wmcr_employee_sub_group', 'wmcr_employee.sub_group_id', '=', 'wmcr_employee_sub_group.id')
+        ->leftJoin('wmcr_employee_position', 'wmcr_employee.position_id', '=', 'wmcr_employee_position.id')
+        ->leftJoin('wmcr_master_level', 'wmcr_employee.level_id', '=', 'wmcr_master_level.id')
+        ->leftJoin('wmcr_employee_timezone', 'wmcr_employee.timezone_id', '=', 'wmcr_employee_timezone.id')
+        ->select(
+            'wmcr_employee.*',
+            'wmcr_master_regional.name AS regional_name',
+            'wmcr_master_witel.name AS witel_name',
+            'wmcr_master_witel.aliases AS witel_aliases',
+            'wmcr_master_mitra.name AS mitra_name',
+            'wmcr_employee_unit.name AS unit_name',
+            'wmcr_employee_sub_unit.name AS sub_unit_name',
+            'wmcr_employee_sub_group.name AS sub_group_name',
+            'wmcr_employee_position.name AS position_name',
+            'wmcr_master_level.name AS level_name',
+            'wmcr_employee_timezone.text AS timezone_name'
+        )
+        ->where('wmcr_employee.nik', session('auth')->nik)
+        ->first();
+    }
+
+    public static function profile_post($req)
+    {
+        DB::table('wmcr_employee')
+        ->where([
+            ['nik', $req->nik],
+            ['is_status', 1]
+        ])
+        ->update([
+            'chat_id'     => $req->chat_id,
+            'timezone_id' => $req->timezone_id
+        ]);
+
+        if ($req->password != null || $req->password != '')
+        {
+            DB::table('wmcr_employee')
+            ->where([
+                ['nik', $req->nik],
+                ['is_status', 1]
+            ])
+            ->update([
+                'password' => MD5($req->password),
+                'token'    => null
+            ]);
+        }
     }
 }
 ?>
