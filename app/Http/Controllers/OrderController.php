@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\DashboardModel;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Models\OrderModel;
+use App\Models\Telegram;
 
 date_default_timezone_set("Asia/Makassar");
 
@@ -92,6 +94,87 @@ class OrderController extends Controller
         $order_tag  = OrderModel::order_tag();
 
         return view('order.undispatch_detail', compact('area', 'order', 'start_date', 'end_date', 'order_tag'));
+    }
+
+    public static function alert_ttr_customer($witel = null, $status = null)
+    {
+        $data = DashboardModel::getListTickets($witel, $status);
+
+        foreach ($data as $k => $v)
+        {
+            $new_time = date("Y-m-d H:i:s", strtotime('+3 hours', strtotime($v->reported_date)));
+            $datenow  = date('Y-m-d H:i:s');
+            $selisih  = strtotime($new_time) - strtotime($datenow);
+            $hari     = floor( ($selisih / (60 * 60 * 24) ) * 24); // Menghitung selisih dalam hari
+            $jam      = floor( ($selisih % (60 * 60 * 24) ) / (60 * 60)); // Menghitung selisih dalam jam
+            $menit    = floor( ($selisih % (60 * 60) ) / 60); // Menghitung selisih dalam menit
+            $jam_new  = $hari+$jam;
+
+            if ($jam_new >= 0)
+            {
+                $message = "Alert TTR 3 Hours\n\n";
+                $message .= "$v->incident | $v->status | $jam_new Jam $menit Menit";
+                if ($witel == 'KALSEL')
+                {
+                    if ($jam_new >= 1 && $jam_new <= 2)
+                    {
+                        // kirim ke TL / SM
+                        $chat_ids = ['401791818'];
+                    }
+                    else
+                    {
+                        // kirim ke AstMgr / Mgr
+                        $chat_ids = ['401791818'];
+                    }
+                }
+                else if ($witel == 'BALIKPAPAN')
+                {
+                    if ($jam_new >= 1 && $jam_new <= 2)
+                    {
+                        // kirim ke TL / SM
+                        $chat_ids = ['401791818'];
+                    }
+                    else
+                    {
+                        // kirim ke AstMgr / Mgr
+                        $chat_ids = ['401791818'];
+                    }
+                }
+                else if ($witel == 'KALBAR')
+                {
+                    if ($jam_new >= 1 && $jam_new <= 2)
+                    {
+                        // kirim ke TL / SM
+                        $chat_ids = ['401791818'];
+                    }
+                    else
+                    {
+                        // kirim ke AstMgr / Mgr
+                        $chat_ids = ['401791818'];
+                    }
+                }
+                else if ($witel == 'KALTENG')
+                {
+                    if ($jam_new >= 1 && $jam_new <= 2)
+                    {
+                        // kirim ke TL / SM
+                        $chat_ids = ['401791818'];
+                    }
+                    else
+                    {
+                        // kirim ke AstMgr / Mgr
+                        $chat_ids = ['401791818'];
+                    }
+                }
+
+                foreach ($chat_ids as $chat_id)
+                {
+                    Telegram::sendMessage($chat_id, "<code>$message</code>");
+                }
+
+                print_r($message);
+            }
+        }
     }
 }
 ?>
