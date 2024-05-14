@@ -44,6 +44,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/position', 'EmployeeController@position');
     });
 
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/TicketsMonitoring', 'DashboardController@TicketsMonitoring');
+        Route::get('/TicketsMonitoringList/{witel}/{status}', 'DashboardController@TicketsMonitoringList');
+    });
+
     Route::prefix('sector')->group(function () {
         Route::get('/', 'SectorController@index');
         Route::get('/rayon', 'SectorController@rayon');
