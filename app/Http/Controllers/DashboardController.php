@@ -30,4 +30,5 @@ class DashboardController extends Controller
         return view('dashboard.monitoringList',compact('witel','status','list'));
     }
 
+
 }

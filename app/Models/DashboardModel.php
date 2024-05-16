@@ -9,6 +9,11 @@ date_default_timezone_set("Asia/Makassar");
 class DashboardModel
 {
     public static function getListTickets($witel,$status){
+        if ($witel=="ALL") {
+            $getWitel = '';
+        } else {
+            $getWitel = 'a.witel = "'.$witel.'" AND ';
+        }
         $query = DB::SELECT('
             select 
             *
@@ -17,6 +22,7 @@ class DashboardModel
             where 
             a.status IN ("ANALYSIS","BACKEND")            
             AND
+            '.$getWitel.'
             a.source_ticket = "CUSTOMER" AND 
             a.summary NOT LIKE "%Z_PERMINTAAN%" AND 
             a.customer_type IN ("HVC_GOLD","HVC_PLATINUM","HVC_DIAMOND")

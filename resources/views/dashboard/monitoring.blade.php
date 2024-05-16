@@ -57,7 +57,7 @@
                 <td>{{ $dataWitel[$r->name]['satu2jam'] ?: 0 }}</td>
                 <td>{{ $dataWitel[$r->name]['dua3jam'] ?: 0 }}</td>
                 <td class="red">{{ $dataWitel[$r->name]['lebih3jam'] ?: 0 }}</td>
-                <td>{{ $dataWitel[$r->name]['total'] ?: 0 }}</td>
+                <td><a href="/dashboard/TicketsMonitoringList/{{ $r->name }}/OPEN">{{ $dataWitel[$r->name]['total'] ?: 0 }}</a></td>
             </tr>
             <?php 
                 $totalnol1jam = $totalnol1jam + $dataWitel[$r->name]['nol1jam'];
@@ -73,7 +73,7 @@
                 <th>{{ $totalsatu2jam }}</th>
                 <th>{{ $totaldua3jam }}</th>
                 <th>{{ $totallebih3jam }}</th>
-                <th>{{ $total }}</th>
+                <th><a href="/dashboard/TicketsMonitoringList/ALL/OPEN">{{ $total }}</a></th>
             </tr>
         </table>
     </div>
