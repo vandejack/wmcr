@@ -87,6 +87,10 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/undispatch-detail', 'AjaxController@undispatch_detail');
             Route::get('/undispatch-search/{order}/{id}', 'AjaxController@undispatch_search');
         });
+
+        Route::prefix('dashboard')->group(function () {
+            Route::get('/ttr-hvc', 'AjaxController@trr_hvc');
+        });
     });
 });
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\DashboardModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\Models\EmployeeModel;
@@ -465,6 +466,72 @@ class AjaxController extends Controller
         $data = OrderModel::undispatch_search($order, $id);
 
         $result['data'] = $data;
+
+        return response()->json($result);
+    }
+
+    public function trr_hvc()
+    {
+        $jml_ttr_hours = $ttl_ttr_0hours = $ttl_ttr_1hours = $ttl_ttr_2hours = $ttl_ttr_3hours = $ttl_ttr_hours = $jml_comply_notcomply = $ttl_comply = $ttl_notcomply = $ttl_comply_notcomply = $percent_comply = $ttl_percent_comply = $ttl_percent_notcomply = $percent_notcomply = 0;
+
+        $data = DashboardModel::ttr_hvc();
+        $result = ['data' => [], 'footer' => []];
+
+        foreach ($data as $k => $v)
+        {
+            $jml_ttr_hours        = $v->ttr_0hours + $v->ttr_1hours + $v->ttr_2hours + $v->ttr_3hours;
+            $ttl_ttr_0hours       += $v->ttr_0hours;
+            $ttl_ttr_1hours       += $v->ttr_1hours;
+            $ttl_ttr_2hours       += $v->ttr_2hours;
+            $ttl_ttr_3hours       += $v->ttr_3hours;
+            $ttl_ttr_hours        += $jml_ttr_hours;
+
+            $jml_comply_notcomply = $v->ttr_comply + $v->ttr_notcomply;
+            $ttl_comply           += $v->ttr_comply;
+            $ttl_notcomply        += $v->ttr_notcomply;
+            $ttl_comply_notcomply += $jml_comply_notcomply;
+
+            if ($jml_comply_notcomply > 0)
+            {
+                $percent_comply = round(($v->ttr_comply / $jml_comply_notcomply) * 100, 2);
+                $percent_notcomply = round(($v->ttr_notcomply / $jml_comply_notcomply) * 100, 2);
+            }
+
+            $percent_comply = is_nan($percent_comply) ? 0 : $percent_comply;
+            $percent_notcomply = is_nan($percent_notcomply) ? 0 : $percent_notcomply;
+ 
+            $result['data'][$k][] = $v->witel;
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_0hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_1hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_2hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_3hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($jml_ttr_hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_comply));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_notcomply));
+            $result['data'][$k][] = $percent_comply." %";
+            $result['data'][$k][] = $percent_notcomply. " %";
+            $k++;
+        }
+
+        if ($ttl_comply_notcomply > 0)
+        {
+            $ttl_percent_comply = round(($ttl_comply / $ttl_comply_notcomply) * 100, 2);
+            $ttl_percent_notcomply = round(($ttl_notcomply / $ttl_comply_notcomply) * 100, 2);
+        }
+
+        $ttl_percent_comply = is_nan($ttl_percent_comply) ? 0 : $ttl_percent_comply;
+        $ttl_percent_notcomply = is_nan($ttl_percent_notcomply) ? 0 : $ttl_percent_notcomply;
+
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_0hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_1hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_2hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_3hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_comply)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_notcomply)).'</b>';
+        $result['footer'][] = '<b>'.$ttl_percent_comply.' %</b>';
+        $result['footer'][] = '<b>'.$ttl_percent_notcomply.' %</b>';
 
         return response()->json($result);
     }
