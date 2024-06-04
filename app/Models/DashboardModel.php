@@ -8,31 +8,47 @@ date_default_timezone_set("Asia/Makassar");
 
 class DashboardModel
 {
-    public static function ttr_hvc()
+    public static function ttr_hvc($witel)
     {
-        return DB::table('wmcr_source_insera')
-        ->select(DB::raw('
-            witel,
-            
-            SUM(CASE WHEN status IN ("NEW", "DRAFT", "ANALYSIS", "PENDING", "BACKEND") AND (TIMESTAMPDIFF( HOUR , reported_date, "'.date('Y-m-d H:i:s').'") >= 0 AND TIMESTAMPDIFF( HOUR , reported_date, "'.date('Y-m-d H:i:s').'") < 1) THEN 1 ELSE 0 END) AS ttr_0hours,
-            SUM(CASE WHEN status IN ("NEW", "DRAFT", "ANALYSIS", "PENDING", "BACKEND") AND (TIMESTAMPDIFF( HOUR , reported_date, "'.date('Y-m-d H:i:s').'") >= 1 AND TIMESTAMPDIFF( HOUR , reported_date, "'.date('Y-m-d H:i:s').'") < 2) THEN 1 ELSE 0 END) AS ttr_1hours,
-            SUM(CASE WHEN status IN ("NEW", "DRAFT", "ANALYSIS", "PENDING", "BACKEND") AND (TIMESTAMPDIFF( HOUR , reported_date, "'.date('Y-m-d H:i:s').'") >= 2 AND TIMESTAMPDIFF( HOUR , reported_date, "'.date('Y-m-d H:i:s').'") < 3) THEN 1 ELSE 0 END) AS ttr_2hours,
-            SUM(CASE WHEN status IN ("NEW", "DRAFT", "ANALYSIS", "PENDING", "BACKEND") AND (TIMESTAMPDIFF( HOUR , reported_date, "'.date('Y-m-d H:i:s').'") >= 3) THEN 1 ELSE 0 END) AS ttr_3hours,
+        $reported_date = 'reported_date';
+        if (in_array($witel, ['KALSEL', 'BALIKPAPAN']))
+        {
+            $reported_date = "DATE_ADD(reported_date, INTERVAL 1 HOUR)";
+            $datenow = "NOW()";
+        }
+        else
+        {
+            $datenow = "DATE_ADD(NOW(), INTERVAL 1 HOUR)";
+        }
 
-            SUM(CASE WHEN status IN ("FINALCHECK", "RESOLVED", "MEDIACARE", "SALAMSIM", "CLOSED") AND (TIMESTAMPDIFF( HOUR , reported_date, status_date) < 3) THEN 1 ELSE 0 END) AS ttr_comply,
-            SUM(CASE WHEN status IN ("FINALCHECK", "RESOLVED", "MEDIACARE", "SALAMSIM", "CLOSED") AND (TIMESTAMPDIFF( HOUR , reported_date, status_date) >= 3) THEN 1 ELSE 0 END) AS ttr_notcomply
-        '))
-        ->whereIn('customer_type', ['HVC_GOLD', 'HVC_PLATINUM', 'HVC_DIAMOND'])
-        ->where([
-            ['source_ticket', 'CUSTOMER'],
-            ['service_type', 'NON-NUMBERING'],
-            ['solution', '!=', 'CABUT/DEACTIVE'],
-            ['summary', 'NOT LIKE', '%Z_PERMINTAAN%'],
-            ['related_to_gamas', 'NO']
-        ])
-        ->whereDate('date_reported', date('Y-m-d'))
-        ->groupBy('witel')
-        ->get();
+        $data = DB::table('wmcr_source_insera')
+            ->select(DB::raw("
+                witel,
+
+                SUM(CASE WHEN status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') AND (TIMESTAMPDIFF( HOUR , $reported_date, $datenow) >= 0 AND TIMESTAMPDIFF( HOUR , $reported_date, $datenow) < 1) THEN 1 ELSE 0 END) AS ttr_0hours,
+                SUM(CASE WHEN status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') AND (TIMESTAMPDIFF( HOUR , $reported_date, $datenow) >= 1 AND TIMESTAMPDIFF( HOUR , $reported_date, $datenow) < 2) THEN 1 ELSE 0 END) AS ttr_1hours,
+                SUM(CASE WHEN status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') AND (TIMESTAMPDIFF( HOUR , $reported_date, $datenow) >= 2 AND TIMESTAMPDIFF( HOUR , $reported_date, $datenow) < 3) THEN 1 ELSE 0 END) AS ttr_2hours,
+                SUM(CASE WHEN status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') AND (TIMESTAMPDIFF( HOUR , $reported_date, $datenow) >= 3) THEN 1 ELSE 0 END) AS ttr_3hours,
+
+                SUM(CASE WHEN status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') AND (TIMESTAMPDIFF( HOUR , $reported_date, status_date) < 3) THEN 1 ELSE 0 END) AS ttr_comply,
+                SUM(CASE WHEN status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') AND (TIMESTAMPDIFF( HOUR , $reported_date, status_date) >= 3) THEN 1 ELSE 0 END) AS ttr_notcomply
+            "))
+            ->whereIn('customer_type', ['HVC_GOLD', 'HVC_PLATINUM', 'HVC_DIAMOND'])
+            ->where([
+                ['source_ticket', 'CUSTOMER'],
+                // ['service_type', 'NON-NUMBERING'],
+                ['solution', '!=', 'CABUT/DEACTIVE'],
+                ['summary', 'NOT LIKE', '%Z_PERMINTAAN%'],
+                ['related_to_gamas', 'NO']
+            ])
+            ->whereDate('date_reported', DB::raw('CURDATE()'));
+
+        if ($witel != 'ALL')
+        {
+            $data->where('witel', $witel);
+        }
+
+        return $data->groupBy('witel')->get();
     }
 
     public static function getListTickets($witel,$status){

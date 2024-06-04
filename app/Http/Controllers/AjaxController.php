@@ -474,7 +474,7 @@ class AjaxController extends Controller
     {
         $jml_ttr_hours = $ttl_ttr_0hours = $ttl_ttr_1hours = $ttl_ttr_2hours = $ttl_ttr_3hours = $ttl_ttr_hours = $jml_comply_notcomply = $ttl_comply = $ttl_notcomply = $ttl_comply_notcomply = $percent_comply = $ttl_percent_comply = $ttl_percent_notcomply = $percent_notcomply = 0;
 
-        $data = DashboardModel::ttr_hvc();
+        $data = DashboardModel::ttr_hvc('ALL');
         $result = ['data' => [], 'footer' => []];
 
         foreach ($data as $k => $v)

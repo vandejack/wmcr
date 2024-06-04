@@ -32,24 +32,25 @@
 @section('content')
 <div class="card shadow-sm">
 	<div class="card-body pb-4">
+        <h3>TTR HVC (Gold , Platinum & Diamond)</h3>
         <div class="table-responsive">
             <table class="table table-hover table-row-bordered gy-5 border rounded w-100" id="ttr_hvc">
                 <thead>
                     <tr class="fw-bold fs-6 text-gray-800 px-7 text-center">
-                        <th rowspan="2">WITEL</th>
-                        <th colspan="4" class="center">TICKETS RUNNING (hours)</th>
-                        <th rowspan="2">TOTAL</th>
-                        <th colspan="5" class="center">TODAY CLOSING</th>                        
+                        <th rowspan="2" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">WITEL</th>
+                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TICKETS RUNNING (hours)</th>
+                        <th rowspan="2" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TOTAL</th>
+                        <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TODAY CLOSING</th>                        
                     </tr>
                     <tr>
-                        <th>0</th>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>>3</th>
-                        <th>COMPLY</th>
-                        <th>NOT COMPLY</th>
-                        <th>COMPLY (%)</th>
-                        <th>NOT COMPLY (%)</th>
+                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">0</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">1</th>
+                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">2</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">>3</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">COMPLY</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">NOT COMPLY</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">COMPLY (%)</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">NOT COMPLY (%)</th>
                     </tr>
                 </thead>
                 <tfoot>
