@@ -12,7 +12,7 @@
 */
 
 Route::get('/login', 'LoginController@login')->name('login');
-Route::post('/login', 'LoginController@login_validate');
+Route::post('/login', 'LoginController@login_sso_post');
 
 Route::get('/reload-captcha', 'LoginController@reloadCaptcha')->name('reload-captcha');
 

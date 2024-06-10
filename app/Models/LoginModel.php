@@ -129,5 +129,68 @@ class LoginModel
         return $token;
     }
 
+    public static function login_sso($user, $password)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://api.telkomakses.co.id/API/sso/auth_sso_post.php',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => 'username='.$user.'&password='.$password,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/x-www-form-urlencoded'
+            ),
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $data = 'failed';
+
+        $result = json_decode($response);
+
+        if ($result->auth == 'Yes')
+        {
+            $check = DB::table('wmcr_employee')
+            ->where('nik', $user)
+            ->first();
+
+            if ($check != null)
+            {
+                DB::table('wmcr_employee')
+                ->where('nik', $user)
+                ->update([
+                    'nik'        => $user,
+                    'name'       => $result->nama,
+                    'password'   => $password,
+                    'is_status'  => 1,
+                    'login_at'   => date('Y-m-d H:i:s'),
+                    'created_by' => 20981020,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+            else
+            {
+                DB::table('wmcr_employee')
+                ->insert([
+                    'nik'        => $user,
+                    'name'       => $result->nama,
+                    'password'   => $password,
+                    'is_status'  => 1,
+                    'login_at'   => date('Y-m-d H: i: s'),
+                    'created_by' => 20981020,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+
+            $data = 'success';
+        }
+
+        return $data;
+    }
+
 }
 ?>

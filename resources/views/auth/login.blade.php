@@ -68,7 +68,7 @@
 									<input class="form-control form-control-lg form-control-solid text-center" placeholder="Masukkan Captcha" type="text" name="captcha" oninput="this.value=this.value.replace(/[^0-9]/g,'');" autocomplete="off" required inputmode="numeric"/>
 								</div>
 								<div class="text-center">
-									<button type="submit" class="btn btn-lg btn-primary w-100 mb-5">Request OTP</button>
+									<button type="submit" class="btn btn-lg btn-primary w-100 mb-5">Login</button>
 								</div>
 							</form>
 						</div>

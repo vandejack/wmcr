@@ -198,6 +198,68 @@ class LoginController extends Controller
         }
     }
 
+    public function login_sso_post(Request $req)
+    {
+        $rules = [ 'captcha' => 'required|captcha' ];
+
+        $validator = Validator::make($req->all(), $rules);
+
+        if ($validator->fails())
+        {
+            return redirect('/login')->with('alerts', [
+                ['type' => 'error', 'text' => 'Invalid or Expired Captcha!']
+            ]);
+        }
+
+        $output = LoginModel::login_sso($req->nik, $req->password);
+
+        if ($output == 'success')
+        {
+            $data = DB::table('wmcr_employee')->where('nik', $req->nik)->first();
+            
+            $token = $data->token;
+
+            if (!$data->token)
+            {
+                $token = LoginModel::setToken($data->id, md5($data->nik . microtime()));
+            }
+
+            if (Session::has('auth-originalUrl'))
+            {
+                $url = Session::pull('auth-originalUrl');
+            }
+            else
+            {
+                $url = '/';
+            }
+
+            if (strpos($url, 'update-location') !== false || strpos($url, 'ajax') !== false)
+            {
+                $url = '/';
+            }
+
+            if ($data->regional_id == 0)
+            {
+                $url = '/profile';
+            }
+
+            $response = redirect($url);
+
+            if ($token)
+            {
+                $response->withCookie(cookie()->forever('wmcr-token', $token));
+            }
+
+            return $response;
+        }
+        else
+        {
+            return back()->with('alerts', [
+                ['type' => 'error', 'text' => 'NIK atau Password Salah!']
+            ]);
+        }
+    }
+
     public function logout()
     {
         Session::forget('auth');
