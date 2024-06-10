@@ -90,6 +90,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::prefix('dashboard')->group(function () {
             Route::get('/ttr-hvc', 'AjaxController@trr_hvc');
+            Route::get('/kpro-provi', 'AjaxController@kpro_provi');
         });
     });
 });

@@ -535,5 +535,58 @@ class AjaxController extends Controller
 
         return response()->json($result);
     }
+
+    public function kpro_provi()
+    {
+        $jml_tsel = $jml_ao_tsel = $jml_orbit_tsel = $jml_mo_tsel = $jml_pda_tsel = $ttl_tsel = $jml_tlkm = $jml_ao_tlkm = $jml_orbit_tlkm = $jml_mo_tlkm = $jml_pda_tlkm = $ttl_tlkm = 0;
+
+        $data = DashboardModel::kpro_provi('ALL');
+
+        $result = ['data' => [], 'footer' => []];
+
+        foreach ($data as $witel => $value)
+        {
+            $jml_tsel       =  (@$value['ao_tsel'] + @$value['orbit_tsel'] + @$value['mo_tsel'] + @$value['pda_tsel']);
+            $jml_ao_tsel    += @$value['ao_tsel'];
+            $jml_orbit_tsel += @$value['orbit_tsel'];
+            $jml_mo_tsel    += @$value['mo_tsel'];
+            $jml_pda_tsel   += @$value['pda_tsel'];
+            $ttl_tsel       += $jml_tsel;
+
+            $jml_tlkm       =  (@$value['ao_tlkm'] + @$value['orbit_tlkm'] + @$value['mo_tlkm'] + @$value['pda_tlkm']);
+            $jml_ao_tlkm    += @$value['ao_tlkm'];
+            $jml_orbit_tlkm += @$value['orbit_tlkm'];
+            $jml_mo_tlkm    += @$value['mo_tlkm'];
+            $jml_pda_tlkm   += @$value['pda_tlkm'];
+            $ttl_tlkm       += $jml_tlkm;
+
+            $result['data'][$witel][] = $witel;
+            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['ao_tsel']));
+            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['orbit_tsel']));
+            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['mo_tsel']));
+            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['pda_tsel']));
+            $result['data'][$witel][] = str_replace(',', '.', number_format($jml_tsel));
+
+            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['ao_tlkm']));
+            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['orbit_tlkm']));
+            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['mo_tlkm']));
+            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['pda_tlkm']));
+            $result['data'][$witel][] = str_replace(',', '.', number_format($jml_tlkm));
+        }
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_ao_tsel)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_orbit_tsel)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_mo_tsel)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_pda_tsel)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_tsel)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_ao_tlkm)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_orbit_tlkm)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_mo_tlkm)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_pda_tlkm)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_tlkm)).'</b>';
+
+        return response()->json($result);
+    }
 }
 ?>
