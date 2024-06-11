@@ -560,18 +560,20 @@ class AjaxController extends Controller
             $jml_pda_tlkm   += @$value['pda_tlkm'];
             $ttl_tlkm       += $jml_tlkm;
 
-            $result['data'][$witel][] = $witel;
-            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['ao_tsel']));
-            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['orbit_tsel']));
-            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['mo_tsel']));
-            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['pda_tsel']));
-            $result['data'][$witel][] = str_replace(',', '.', number_format($jml_tsel));
+            $result['data'][] = [
+                $witel,
+                str_replace(',', '.', number_format(@$value['ao_tsel'])),
+                str_replace(',', '.', number_format(@$value['orbit_tsel'])),
+                str_replace(',', '.', number_format(@$value['mo_tsel'])),
+                str_replace(',', '.', number_format(@$value['pda_tsel'])),
+                str_replace(',', '.', number_format($jml_tsel)),
 
-            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['ao_tlkm']));
-            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['orbit_tlkm']));
-            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['mo_tlkm']));
-            $result['data'][$witel][] = str_replace(',', '.', number_format(@$value['pda_tlkm']));
-            $result['data'][$witel][] = str_replace(',', '.', number_format($jml_tlkm));
+                str_replace(',', '.', number_format(@$value['ao_tlkm'])),
+                str_replace(',', '.', number_format(@$value['orbit_tlkm'])),
+                str_replace(',', '.', number_format(@$value['mo_tlkm'])),
+                str_replace(',', '.', number_format(@$value['pda_tlkm'])),
+                str_replace(',', '.', number_format($jml_tlkm))
+            ];
         }
 
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_ao_tsel)).'</b>';

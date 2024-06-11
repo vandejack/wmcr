@@ -91,6 +91,77 @@
         </div>
     </div>
 </div>
+
+<br />
+
+<div class="card shadow-sm">
+	<div class="card-body pb-4">
+        <h3>PROVI K-PRO</h3>
+        <div class="table-responsive">
+            <table class="table table-hover table-row-bordered gy-5 border rounded w-100" id="kpro_provi">
+                <thead>
+                    <tr class="fw-bold fs-6 text-gray-800 px-7 text-center">
+                        <th rowspan="2" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">WITEL</th>
+                        <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TSEL</th>
+                        <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TLKM</th>                        
+                    </tr>
+                    <tr>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">AO</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">ORBIT</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">MO</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">PDA</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TOTAL</th>
+
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">AO</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">ORBIT</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">MO</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">PDA</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TOTAL</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <b>TOTAL</b>
+                        </td>
+
+                        <td>
+                            <b>-</b>
+                        </td>
+                        <td>
+                            <b>-</b>
+                        </td>
+                        <td>
+                            <b>-</b>
+                        </td>
+                        <td>
+                            <b>-</b>
+                        </td>
+                        <td>
+                            <b>-</b>
+                        </td>
+
+                        <td>
+                            <b>-</b>
+                        </td>
+                        <td>
+                            <b>-</b>
+                        </td>
+                        <td>
+                            <b>-</b>
+                        </td>
+                        <td>
+                            <b>-</b>
+                        </td>
+                        <td>
+                            <b>-</b>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('footer')
@@ -106,6 +177,29 @@
 			autoWidth: true,
 			ordering: false,
 			ajax: `/ajax/dashboard/ttr-hvc`,
+			'footerCallback': function( tfoot, data, start, end, display )
+			{
+				var response = this.api().ajax.json();
+				if (response)
+				{
+					var $td = $(tfoot).find('td');
+					$.each(response.footer, function(k, v)
+					{
+						var kk = k + 1;
+						$td.eq(kk).html(v);
+					})
+				}
+			}
+      	});
+
+        $('#kpro_provi').DataTable({
+			lengthChange: false,
+			searching: false,
+			paging: false,
+			info: false,
+			autoWidth: true,
+			ordering: false,
+			ajax: `/ajax/dashboard/kpro-provi`,
 			'footerCallback': function( tfoot, data, start, end, display )
 			{
 				var response = this.api().ajax.json();
