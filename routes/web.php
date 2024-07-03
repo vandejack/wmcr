@@ -12,7 +12,7 @@
 */
 
 Route::get('/login', 'LoginController@login')->name('login');
-Route::post('/login', 'LoginController@login_sso_post');
+Route::post('/login', 'LoginController@login_validate');
 
 Route::get('/reload-captcha', 'LoginController@reloadCaptcha')->name('reload-captcha');
 
@@ -90,7 +90,8 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::prefix('dashboard')->group(function () {
             Route::get('/ttr-hvc', 'AjaxController@trr_hvc');
-            Route::get('/kpro-provi', 'AjaxController@kpro_provi');
+            Route::get('/productivity-order', 'AjaxController@productivity_order');
+            Route::get('/productivity-provisioning', 'AjaxController@dashboard_produktif');
         });
     });
 });

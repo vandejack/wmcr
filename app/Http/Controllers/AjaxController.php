@@ -536,29 +536,52 @@ class AjaxController extends Controller
         return response()->json($result);
     }
 
-    public function kpro_provi()
+    public function productivity_order()
     {
-        $jml_tsel = $jml_ao_tsel = $jml_orbit_tsel = $jml_mo_tsel = $jml_pda_tsel = $ttl_tsel = $jml_tlkm = $jml_ao_tlkm = $jml_orbit_tlkm = $jml_mo_tlkm = $jml_pda_tlkm = $ttl_tlkm = 0;
+        $jml_tsel = $jml_ao_tsel = $jml_orbit_tsel = $jml_mo_tsel = $jml_pda_tsel = $ttl_tsel = 
+        $jml_tlkm = $jml_ao_tlkm = $jml_orbit_tlkm = $jml_mo_tlkm = $jml_pda_tlkm = $ttl_tlkm =
+        $jml_insera_b2c = $jml_insera_b2c_vvip = $jml_insera_b2c_diamond = $jml_insera_b2c_platinum = $jml_insera_b2c_gold = $jml_insera_b2c_reguler = $jml_insera_b2c_proactive = $ttl_insera_b2c =
+        $jml_insera_b2b = $jml_insera_b2b_des = $jml_insera_b2b_dbs = $jml_insera_b2b_dgs = $jml_insera_b2b_dps = $jml_insera_b2b_dss = $jml_insera_b2b_reg = $jml_insera_b2b_dws = $jml_insera_b2b_taw = $ttl_insera_b2b = 0;
 
-        $data = DashboardModel::kpro_provi('ALL');
+        $data = DashboardModel::productivity_order();
 
         $result = ['data' => [], 'footer' => []];
 
         foreach ($data as $witel => $value)
         {
-            $jml_tsel       =  (@$value['ao_tsel'] + @$value['orbit_tsel'] + @$value['mo_tsel'] + @$value['pda_tsel']);
-            $jml_ao_tsel    += @$value['ao_tsel'];
-            $jml_orbit_tsel += @$value['orbit_tsel'];
-            $jml_mo_tsel    += @$value['mo_tsel'];
-            $jml_pda_tsel   += @$value['pda_tsel'];
-            $ttl_tsel       += $jml_tsel;
+            $jml_tsel                 =  (@$value['ao_tsel'] + @$value['orbit_tsel'] + @$value['mo_tsel'] + @$value['pda_tsel']);
+            $jml_ao_tsel              += @$value['ao_tsel'];
+            $jml_orbit_tsel           += @$value['orbit_tsel'];
+            $jml_mo_tsel              += @$value['mo_tsel'];
+            $jml_pda_tsel             += @$value['pda_tsel'];
+            $ttl_tsel                 += $jml_tsel;
 
-            $jml_tlkm       =  (@$value['ao_tlkm'] + @$value['orbit_tlkm'] + @$value['mo_tlkm'] + @$value['pda_tlkm']);
-            $jml_ao_tlkm    += @$value['ao_tlkm'];
-            $jml_orbit_tlkm += @$value['orbit_tlkm'];
-            $jml_mo_tlkm    += @$value['mo_tlkm'];
-            $jml_pda_tlkm   += @$value['pda_tlkm'];
-            $ttl_tlkm       += $jml_tlkm;
+            $jml_tlkm                 =  (@$value['ao_tlkm'] + @$value['orbit_tlkm'] + @$value['mo_tlkm'] + @$value['pda_tlkm']);
+            $jml_ao_tlkm              += @$value['ao_tlkm'];
+            $jml_orbit_tlkm           += @$value['orbit_tlkm'];
+            $jml_mo_tlkm              += @$value['mo_tlkm'];
+            $jml_pda_tlkm             += @$value['pda_tlkm'];
+            $ttl_tlkm                 += $jml_tlkm;
+
+            $jml_insera_b2c           =  (@$value['insera_b2c_vvip'] + @$value['insera_b2c_diamond'] + @$value['insera_b2c_platinum'] + @$value['insera_b2c_gold'] + @$value['insera_b2c_reguler'] + @$value['insera_b2c_proactive']);
+            $jml_insera_b2c_vvip      += @$value['insera_b2c_vvip'];
+            $jml_insera_b2c_diamond   += @$value['insera_b2c_diamond'];
+            $jml_insera_b2c_platinum  += @$value['insera_b2c_platinum'];
+            $jml_insera_b2c_gold      += @$value['insera_b2c_gold'];
+            $jml_insera_b2c_reguler   += @$value['insera_b2c_reguler'];
+            $jml_insera_b2c_proactive += @$value['insera_b2c_proactive'];
+            $ttl_insera_b2c           += $jml_insera_b2c;
+
+            $jml_insera_b2b           =  (@$value['insera_b2b_des'] + @$value['insera_b2b_dbs'] + @$value['insera_b2b_dgs'] + @$value['insera_b2b_dps'] + @$value['insera_b2b_dss'] + @$value['insera_b2b_reg'] + @$value['insera_b2b_dws'] + @$value['insera_b2b_taw']);
+            $jml_insera_b2b_des       += @$value['insera_b2b_des'];
+            $jml_insera_b2b_dbs       += @$value['insera_b2b_dbs'];
+            $jml_insera_b2b_dgs       += @$value['insera_b2b_dgs'];
+            $jml_insera_b2b_dps       += @$value['insera_b2b_dps'];
+            $jml_insera_b2b_dss       += @$value['insera_b2b_dss'];
+            $jml_insera_b2b_reg       += @$value['insera_b2b_reg'];
+            $jml_insera_b2b_dws       += @$value['insera_b2b_dws'];
+            $jml_insera_b2b_taw       += @$value['insera_b2b_taw'];
+            $ttl_insera_b2b           += $jml_insera_b2b;
 
             $result['data'][] = [
                 $witel,
@@ -572,7 +595,25 @@ class AjaxController extends Controller
                 str_replace(',', '.', number_format(@$value['orbit_tlkm'])),
                 str_replace(',', '.', number_format(@$value['mo_tlkm'])),
                 str_replace(',', '.', number_format(@$value['pda_tlkm'])),
-                str_replace(',', '.', number_format($jml_tlkm))
+                str_replace(',', '.', number_format($jml_tlkm)),
+
+                str_replace(',', '.', number_format(@$value['insera_b2c_vvip'])),
+                str_replace(',', '.', number_format(@$value['insera_b2c_diamond'])),
+                str_replace(',', '.', number_format(@$value['insera_b2c_platinum'])),
+                str_replace(',', '.', number_format(@$value['insera_b2c_gold'])),
+                str_replace(',', '.', number_format(@$value['insera_b2c_reguler'])),
+                str_replace(',', '.', number_format(@$value['insera_b2c_proactive'])),
+                str_replace(',', '.', number_format($jml_insera_b2c)),
+
+                str_replace(',', '.', number_format(@$value['insera_b2b_des'])),
+                str_replace(',', '.', number_format(@$value['insera_b2b_dbs'])),
+                str_replace(',', '.', number_format(@$value['insera_b2b_dgs'])),
+                str_replace(',', '.', number_format(@$value['insera_b2b_dps'])),
+                str_replace(',', '.', number_format(@$value['insera_b2b_dss'])),
+                str_replace(',', '.', number_format(@$value['insera_b2b_reg'])),
+                str_replace(',', '.', number_format(@$value['insera_b2b_dws'])),
+                str_replace(',', '.', number_format(@$value['insera_b2b_taw'])),
+                str_replace(',', '.', number_format($jml_insera_b2b))
             ];
         }
 
@@ -587,6 +628,108 @@ class AjaxController extends Controller
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_mo_tlkm)).'</b>';
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_pda_tlkm)).'</b>';
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_tlkm)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_vvip)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_diamond)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_platinum)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_gold)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_reguler)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_proactive)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_insera_b2c)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_des)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_dbs)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_dgs)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_dps)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_dss)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_reg)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_dws)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_taw)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_insera_b2b)).'</b>';
+
+        return response()->json($result);
+    }
+
+    public function dashboard_produktif()
+    {
+        $ttl_teknisi = $jml_sisa_order = $ttl_order_ao = $ttl_order_orbit = $ttl_order_addon = $ttl_order_pda = $ttl_sisa_order = $jml_ps = $ttl_ps_ao = $ttl_ps_orbit = $ttl_ps_addon = $ttl_ps_pda = $ttl_ps = $jml_order_kendala =$ttl_order_kp = $ttl_order_kt = $ttl_order_kendala = $jml_point = $ttl_point = 0;
+
+        $start_date = Input::get('start_date') ?? date('Y-m-01');
+        $end_date   = Input::get('end_date') ?? date('Y-m-d');
+
+        $data  = DashboardModel::dashboard_produktif($start_date, $end_date);
+
+        $result = ['data' => [], 'footer' => []];
+
+        foreach ($data as $k => $v)
+        {
+            $ttl_teknisi       += $v->jml_teknisi;
+
+            $jml_sisa_order    = ($v->order_ao + $v->order_orbit + $v->order_addon + $v->order_pda);
+            $ttl_order_ao      += $v->order_ao;
+            $ttl_order_orbit   += $v->order_orbit;
+            $ttl_order_addon   += $v->order_addon;
+            $ttl_order_pda     += $v->order_pda;
+            $ttl_sisa_order    += $jml_sisa_order;
+
+            $jml_ps            = ($v->ps_ao + $v->ps_orbit + $v->ps_addon + $v->ps_pda);
+            $ttl_ps_ao         += $v->ps_ao;
+            $ttl_ps_orbit      += $v->ps_orbit;
+            $ttl_ps_addon      += $v->ps_addon;
+            $ttl_ps_pda        += $v->ps_pda;
+            $ttl_ps            += $jml_ps;
+
+            $jml_order_kendala = ($v->order_kp + $v->order_kt);
+            $ttl_order_kp      += $v->order_kp;
+            $ttl_order_kt      += $v->order_kt;
+            $ttl_order_kendala += $jml_order_kendala;
+
+            $jml_point         = ($v->ps_ao * 4) + ($v->ps_orbit * 2) + ($v->ps_addon * 2) + ($v->ps_pda * 2);
+            $ttl_point         += $jml_point;
+
+            $result['data'][$k][] = $v->sektor;
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=teknisi&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->jml_teknisi.'</a>';
+
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=order_ao&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->order_ao.'</a>';
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=order_orbit&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->order_orbit.'</a>';
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=order_addon&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->order_addon.'</a>';
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=order_pda&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->order_pda.'</a>';
+            $result['data'][$k][] = $jml_sisa_order;
+
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=ps_ao&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->ps_ao.'</a>';
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=ps_orbit&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->ps_orbit.'</a>';
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=ps_addon&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->ps_addon.'</a>';
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=ps_pda&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->ps_pda.'</a>';
+            $result['data'][$k][] = $jml_ps;
+
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=order_kp&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->order_kp.'</a>';
+            $result['data'][$k][] = '<a href="/dashboard/productivity-sector-detail?sektor='.$v->sektor.'&status=order_kt&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$v->order_kt.'</a>';
+            $result['data'][$k][] = $jml_order_kendala;
+
+            $result['data'][$k][] = $jml_point;
+            
+            $k++;
+        }
+
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=teknisi&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_teknisi.'</a></b>';
+
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_ao&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_ao.'</a></b>';
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_orbit&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_orbit.'</a></b>';
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_addon&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_addon.'</a></b>';
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_pda&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_pda.'</a></b>';
+        $result['footer'][] = $ttl_sisa_order;
+
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=ps_ao&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_ps_ao.'</a></b>';
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=ps_orbit&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_ps_orbit.'</a></b>';
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=ps_addon&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_ps_addon.'</a></b>';
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=ps_pda&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_ps_pda.'</a></b>';
+        $result['footer'][] = $ttl_ps;
+
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_kp&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_kp.'</a></b>';
+        $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_kt&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_kt.'</a></b>';
+        $result['footer'][] = $ttl_order_kendala;
+
+        $result['footer'][] = $ttl_point;
 
         return response()->json($result);
     }
