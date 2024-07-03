@@ -33,83 +33,19 @@
 @section('content')
 <div class="card shadow-sm">
 	<div class="card-body pb-4">
-        <h3>TTR HVC (Gold , Platinum & Diamond)</h3>
-        <div class="table-responsive">
-            <table class="table table-hover table-row-bordered gy-5 border rounded w-100" id="ttr_hvc">
-                <thead>
-                    <tr class="fw-bold fs-6 text-gray-800 px-7 text-center">
-                        <th rowspan="2" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">WITEL</th>
-                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TICKETS RUNNING (hours)</th>
-                        <th rowspan="2" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TOTAL</th>
-                        <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TODAY CLOSING</th>                        
-                    </tr>
-                    <tr>
-                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">0</th>
-                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">1</th>
-                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">2</th>
-                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">>3</th>
-                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">COMPLY</th>
-                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">NOT COMPLY</th>
-                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">COMPLY (%)</th>
-                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">NOT COMPLY (%)</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <td>
-                            <b>TOTAL</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-    </div>
-</div>
-
-<br />
-
-<div class="card shadow-sm">
-	<div class="card-body pb-4">
-        <h3>PRODUKTIFITAS ORDER</h3>
+        <h3>Produktifitas Order</h3>
         <div class="table-responsive">
             <table class="table table-hover table-row-bordered gy-5 border rounded w-100" id="productivity_order">
                 <thead>
                     <tr class="fw-bold fs-6 text-gray-800 px-7 text-center">
                         <th rowspan="3" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">WITEL</th>
                         <th colspan="10" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">PROVISIONING</th>
-                        <th colspan="16" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">ASSURANCE</th>                        
+                        <th colspan="17" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">ASSURANCE</th>                        
                     </tr>
                     <tr>
                         <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TSEL</th>
                         <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TLKM</th>
-                        <th colspan="7" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">B2C</th>
+                        <th colspan="8" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">B2C</th>
                         <th colspan="9" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">B2B</th>
                     </tr>
                     <tr>
@@ -126,7 +62,8 @@
                         <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">PLAT</th>
                         <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">GOLD</th>
                         <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">REG</th>
-                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">PRO</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">UNS</th>
+                        <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">SQM</th>
                         <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TTL</th>
 
                         <th style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">DES</th>
@@ -145,71 +82,11 @@
                         <td>
                             <b>TOTAL</b>
                         </td>
-                        @for ($i = 0; $i < 2; $i ++)
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
+                        @for ($i = 0; $i < 27; $i ++)
                         <td>
                             <b>-</b>
                         </td>
                         @endfor
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
                     </tr>
                 </tfoot>
             </table>
@@ -221,7 +98,124 @@
 
 <div class="card shadow-sm">
 	<div class="card-body pb-4">
-        <h3>DASHBOARD PRODUKTIFITAS PROVISIONING PERIODE {{ $start_date }} S/D {{ $end_date }}</h3>
+        <h3>Time To Repair (TTR)</h3>
+        <p class="text-muted" style="font-size: 10px">NEW, DRAFT, ANALYSIS, PENDING, BACKEND</p>
+        <div class="table-responsive">
+            <table class="table table-hover table-row-bordered gy-5 border rounded w-100" id="ttr_comply_notcomply_open">
+                <thead>
+                    <tr class="fw-bold fs-6 text-gray-800 px-7 text-center">
+                        <th rowspan="2" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">WITEL</th>
+                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">HVC_VVIP</th>
+                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">HVC_DIAMOND</th>                     
+                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">HVC_PLATINUM</th>                     
+                        <th colspan="4" class="center" style="font-size: 8px; font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">HVC_GOLD, HVC_SILVER, REGULER</th>
+                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">MANJA</th>                     
+                    </tr>
+                    <tr>
+                        @for ($i = 0; $i < 2; $i ++)
+                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">1</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">2</th>
+                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">3</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">3+</th>
+                        @endfor
+
+                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">1</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">3</th>
+                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">6</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">6+</th>
+
+                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">6</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">12</th>
+                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">24</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">36</th>
+
+                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">1</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">2</th>
+                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">3</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">3+</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <b>TOTAL</b>
+                        </td>
+                        @for ($i = 0; $i < 20; $i ++)
+                        <td>
+                            <b>-</b>
+                        </td>
+                        @endfor
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div class="card shadow-sm">
+	<div class="card-body pb-4">
+        <h3>Time To Repair (TTR)</h3>
+        <p class="text-muted" style="font-size: 10px">FINALCHECK, RESOLVED, MEDIACARE, SALAMSIM, CLOSED</p>
+        <div class="table-responsive">
+            <table class="table table-hover table-row-bordered gy-5 border rounded w-100" id="ttr_comply_notcomply_closed">
+                <thead>
+                    <tr class="fw-bold fs-6 text-gray-800 px-7 text-center">
+                        <th rowspan="2" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">WITEL</th>
+                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">HVC_VVIP</th>
+                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">HVC_DIAMOND</th>                     
+                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">HVC_PLATINUM</th>                     
+                        <th colspan="4" class="center" style="font-size: 8px; font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">HVC_GOLD, HVC_SILVER, REGULER</th>
+                        <th colspan="4" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">MANJA</th>                     
+                    </tr>
+                    <tr>
+                        @for ($i = 0; $i < 2; $i ++)
+                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">1</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">2</th>
+                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">3</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">3+</th>
+                        @endfor
+
+                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">1</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">3</th>
+                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">6</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">6+</th>
+
+                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">6</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">12</th>
+                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">24</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">36</th>
+
+                        <th style="font-weight: bold; background-color: rgb(131, 149, 167); color: white">1</th>
+                        <th style="font-weight: bold; background-color: rgb(29, 209, 161); color: white">2</th>
+                        <th style="font-weight: bold; background-color: rgb(254, 202, 87); color: white">3</th>
+                        <th style="font-weight: bold; background-color: rgb(241, 65, 108); color: white">3+</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <b>TOTAL</b>
+                        </td>
+                        @for ($i = 0; $i < 20; $i ++)
+                        <td>
+                            <b>-</b>
+                        </td>
+                        @endfor
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div class="card shadow-sm">
+	<div class="card-body pb-4">
+        <h3>Dashboard Produktifitas Provisioning</h3>
+        <p class="text-muted" style="font-size: 10px">Periode {{ $start_date }} s/d {{ $end_date }}</p>
         <div class="table-responsive">
             <table class="table table-hover table-row-bordered gy-5 border rounded w-100" id="productivity_provisioning">
                 <thead>
@@ -256,38 +250,11 @@
                         <td>
                             <b>TOTAL</b>
                         </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        @for ($i = 0; $i < 2; $i ++)
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
+                        @for ($i = 0; $i < 15; $i ++)
                         <td>
                             <b>-</b>
                         </td>
                         @endfor
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
-                        <td>
-                            <b>-</b>
-                        </td>
                     </tr>
                 </tfoot>
             </table>
@@ -302,14 +269,14 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 
-        $('#ttr_hvc').DataTable({
+        $('#productivity_order').DataTable({
 			lengthChange: false,
 			searching: false,
 			paging: false,
 			info: false,
 			autoWidth: true,
 			ordering: false,
-			ajax: `/ajax/dashboard/ttr-hvc`,
+			ajax: `/ajax/dashboard/productivity-order`,
 			'footerCallback': function( tfoot, data, start, end, display )
 			{
 				var response = this.api().ajax.json();
@@ -325,14 +292,37 @@
 			}
       	});
 
-        $('#productivity_order').DataTable({
+        $('#ttr_comply_notcomply_open').DataTable({
 			lengthChange: false,
 			searching: false,
 			paging: false,
 			info: false,
 			autoWidth: true,
 			ordering: false,
-			ajax: `/ajax/dashboard/productivity-order`,
+			ajax: `/ajax/dashboard/ttr-comply-notcomply-open`,
+			'footerCallback': function( tfoot, data, start, end, display )
+			{
+				var response = this.api().ajax.json();
+				if (response)
+				{
+					var $td = $(tfoot).find('td');
+					$.each(response.footer, function(k, v)
+					{
+						var kk = k + 1;
+						$td.eq(kk).html(v);
+					})
+				}
+			}
+      	});
+
+        $('#ttr_comply_notcomply_closed').DataTable({
+			lengthChange: false,
+			searching: false,
+			paging: false,
+			info: false,
+			autoWidth: true,
+			ordering: false,
+			ajax: `/ajax/dashboard/ttr-comply-notcomply-closed`,
 			'footerCallback': function( tfoot, data, start, end, display )
 			{
 				var response = this.api().ajax.json();

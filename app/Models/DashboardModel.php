@@ -8,49 +8,6 @@ date_default_timezone_set("Asia/Makassar");
 
 class DashboardModel
 {
-    public static function ttr_hvc($witel)
-    {
-        $reported_date = 'reported_date';
-        if (in_array($witel, ['KALSEL', 'BALIKPAPAN']))
-        {
-            $reported_date = "DATE_ADD(reported_date, INTERVAL 1 HOUR)";
-            $datenow = "NOW()";
-        }
-        else
-        {
-            $datenow = "DATE_ADD(NOW(), INTERVAL 1 HOUR)";
-        }
-
-        $data = DB::table('wmcr_source_insera')
-            ->select(DB::raw("
-                witel,
-
-                SUM(CASE WHEN status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') AND (TIMESTAMPDIFF( HOUR , $reported_date, $datenow) >= 0 AND TIMESTAMPDIFF( HOUR , $reported_date, $datenow) < 1) THEN 1 ELSE 0 END) AS ttr_0hours,
-                SUM(CASE WHEN status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') AND (TIMESTAMPDIFF( HOUR , $reported_date, $datenow) >= 1 AND TIMESTAMPDIFF( HOUR , $reported_date, $datenow) < 2) THEN 1 ELSE 0 END) AS ttr_1hours,
-                SUM(CASE WHEN status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') AND (TIMESTAMPDIFF( HOUR , $reported_date, $datenow) >= 2 AND TIMESTAMPDIFF( HOUR , $reported_date, $datenow) < 3) THEN 1 ELSE 0 END) AS ttr_2hours,
-                SUM(CASE WHEN status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') AND (TIMESTAMPDIFF( HOUR , $reported_date, $datenow) >= 3) THEN 1 ELSE 0 END) AS ttr_3hours,
-
-                SUM(CASE WHEN status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') AND (TIMESTAMPDIFF( HOUR , $reported_date, status_date) < 3) THEN 1 ELSE 0 END) AS ttr_comply,
-                SUM(CASE WHEN status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') AND (TIMESTAMPDIFF( HOUR , $reported_date, status_date) >= 3) THEN 1 ELSE 0 END) AS ttr_notcomply
-            "))
-            ->whereIn('customer_type', ['HVC_GOLD', 'HVC_PLATINUM', 'HVC_DIAMOND'])
-            ->where([
-                ['source_ticket', 'CUSTOMER'],
-                // ['service_type', 'NON-NUMBERING'],
-                ['solution', '!=', 'CABUT/DEACTIVE'],
-                ['summary', 'NOT LIKE', '%Z_PERMINTAAN%'],
-                ['related_to_gamas', 'NO']
-            ])
-            ->whereDate('date_reported', DB::raw('CURDATE()'));
-
-        if ($witel != 'ALL')
-        {
-            $data->where('witel', $witel);
-        }
-
-        return $data->groupBy('witel')->get();
-    }
-
     public static function productivity_order()
     {
         $witel = DB::table('wmcr_master_witel')->get();
@@ -102,7 +59,8 @@ class DashboardModel
             SUM(CASE WHEN wsi.customer_type = "HVC_PLATINUM" AND wsi.source_ticket = "CUSTOMER" AND wsi.customer_segment IN ("DCS", "PL-TSEL") THEN 1 ELSE 0 END) AS insera_b2c_platinum,
             SUM(CASE WHEN wsi.customer_type = "HVC_GOLD" AND wsi.source_ticket = "CUSTOMER" AND wsi.customer_segment IN ("DCS", "PL-TSEL") THEN 1 ELSE 0 END) AS insera_b2c_gold,
             SUM(CASE WHEN wsi.customer_type = "REGULER" AND wsi.source_ticket = "CUSTOMER" AND wsi.customer_segment IN ("DCS", "PL-TSEL") THEN 1 ELSE 0 END) AS insera_b2c_reguler,
-            SUM(CASE WHEN wsi.source_ticket = "PROACTIVE" AND wsi.customer_segment IN ("DCS", "PL-TSEL") THEN 1 ELSE 0 END) AS insera_b2c_proactive,
+            SUM(CASE WHEN wsi.source_ticket = "PROACTIVE" AND wsi.reported_by LIKE "PROMAN%" AND wsi.customer_segment IN ("DCS", "PL-TSEL") THEN 1 ELSE 0 END) AS insera_b2c_unspec,
+            SUM(CASE WHEN wsi.source_ticket = "PROACTIVE" AND wsi.reported_by = "PROACTIVE_TICKET" AND wsi.customer_segment IN ("DCS", "PL-TSEL") THEN 1 ELSE 0 END) AS insera_b2c_sqm,
 
             SUM(CASE WHEN wsi.customer_segment = "DES" THEN 1 ELSE 0 END) AS insera_b2b_des,
             SUM(CASE WHEN wsi.customer_segment = "DBS" THEN 1 ELSE 0 END) AS insera_b2b_dbs,
@@ -180,13 +138,14 @@ class DashboardModel
                         $query[$val->aliases]['insera_b2c_platinum'] = $val_c3->insera_b2c_platinum;
                         $query[$val->aliases]['insera_b2c_gold']     = $val_c3->insera_b2c_gold;
                         $query[$val->aliases]['insera_b2c_reguler']  = $val_c3->insera_b2c_reguler;
+                        $query[$val->aliases]['insera_b2c_unspec']   = $val_c3->insera_b2c_unspec;
+                        $query[$val->aliases]['insera_b2c_sqm']      = $val_c3->insera_b2c_sqm;
 
                         $query[$val->aliases]['insera_b2b_des']      = $val_c3->insera_b2b_des;
                         $query[$val->aliases]['insera_b2b_dbs']      = $val_c3->insera_b2b_dbs;
                         $query[$val->aliases]['insera_b2b_dgs']      = $val_c3->insera_b2b_dgs;
                         $query[$val->aliases]['insera_b2b_dps']      = $val_c3->insera_b2b_dps;
                         $query[$val->aliases]['insera_b2b_dss']      = $val_c3->insera_b2b_dss;
-
                         $query[$val->aliases]['insera_b2b_reg']      = $val_c3->insera_b2b_reg;
                         $query[$val->aliases]['insera_b2b_dws']      = $val_c3->insera_b2b_dws;
                         $query[$val->aliases]['insera_b2b_taw']      = $val_c3->insera_b2b_taw;
@@ -194,15 +153,22 @@ class DashboardModel
                 }
                 else
                 {
-                    $query['NONE']['insera_b2b_des'] = $val_c3->insera_b2b_des;
-                    $query['NONE']['insera_b2b_dbs'] = $val_c3->insera_b2b_dbs;
-                    $query['NONE']['insera_b2b_dgs'] = $val_c3->insera_b2b_dgs;
-                    $query['NONE']['insera_b2b_dps'] = $val_c3->insera_b2b_dps;
-                    $query['NONE']['insera_b2b_dss'] = $val_c3->insera_b2b_dss;
+                    $query['NONE']['insera_b2c_vvip']     = $val_c3->insera_b2c_vvip;
+                    $query['NONE']['insera_b2c_diamond']  = $val_c3->insera_b2c_diamond;
+                    $query['NONE']['insera_b2c_platinum'] = $val_c3->insera_b2c_platinum;
+                    $query['NONE']['insera_b2c_gold']     = $val_c3->insera_b2c_gold;
+                    $query['NONE']['insera_b2c_reguler']  = $val_c3->insera_b2c_reguler;
+                    $query['NONE']['insera_b2c_unspec']   = $val_c3->insera_b2c_unspec;
+                    $query['NONE']['insera_b2c_sqm']      = $val_c3->insera_b2c_sqm;
 
-                    $query['NONE']['insera_b2b_reg'] = $val_c3->insera_b2b_reg;
-                    $query['NONE']['insera_b2b_dws'] = $val_c3->insera_b2b_dws;
-                    $query['NONE']['insera_b2b_taw'] = $val_c3->insera_b2b_taw;
+                    $query['NONE']['insera_b2b_des']      = $val_c3->insera_b2b_des;
+                    $query['NONE']['insera_b2b_dbs']      = $val_c3->insera_b2b_dbs;
+                    $query['NONE']['insera_b2b_dgs']      = $val_c3->insera_b2b_dgs;
+                    $query['NONE']['insera_b2b_dps']      = $val_c3->insera_b2b_dps;
+                    $query['NONE']['insera_b2b_dss']      = $val_c3->insera_b2b_dss;
+                    $query['NONE']['insera_b2b_reg']      = $val_c3->insera_b2b_reg;
+                    $query['NONE']['insera_b2b_dws']      = $val_c3->insera_b2b_dws;
+                    $query['NONE']['insera_b2b_taw']      = $val_c3->insera_b2b_taw;
                 }
             }
         }
@@ -210,159 +176,557 @@ class DashboardModel
         return $query;
     }
 
+    public static function ttr_comply_notcomply_open()
+    {
+        $witel = session('auth')->witel_name;
+
+        $reported_date = 'wsi.reported_date';
+
+        $booking_date = 'wsi.booking_date';
+        
+        if (in_array($witel, ['KALSEL', 'BALIKPAPAN']))
+        {
+            $reported_date = "DATE_ADD(wsi.reported_date, INTERVAL 1 HOUR)";
+            
+            $booking_date = "DATE_ADD(wsi.booking_date, INTERVAL 1 HOUR)";
+
+            $datenow = "NOW()";
+        }
+        else
+        {
+            $datenow = "DATE_ADD(NOW(), INTERVAL 1 HOUR)";
+        }
+
+        return DB::table('wmcr_source_insera AS wsi')
+        ->leftJoin('wmcr_master_sto AS wms', 'wsi.workzone', '=', 'wms.name')
+        ->select(DB::raw("
+            wsi.witel,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_VVIP'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 60) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_vvip_1hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_VVIP'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 60 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 120) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_vvip_2hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_VVIP'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 120 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_vvip_3hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_VVIP'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_vvip_3plus_hours,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_DIAMOND'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 60) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_diamond_1hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_DIAMOND'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 60 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 120) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_diamond_2hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_DIAMOND'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 120 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_diamond_3hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_DIAMOND'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_diamond_3plus_hours,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_PLATINUM'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 60) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_platinum_1hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_PLATINUM'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 60 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_platinum_3hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_PLATINUM'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 180 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 360) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_platinum_6hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type = 'HVC_PLATINUM'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 360) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_platinum_6plus_hours,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 360) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_gsr_6hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 360 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 720) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_gsr_12hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 720 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 1440) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_gsr_24hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 1440 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 2160)
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_gsr_36hours,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.booking_date != '0000-00-00 00:00:00'
+                AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) <= 60) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_manja_1hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.booking_date != '0000-00-00 00:00:00'
+                AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) > 60 
+                AND TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) <= 120) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_manja_2hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.booking_date != '0000-00-00 00:00:00'
+                AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) > 120 
+                AND TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) <= 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_manja_3hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('NEW', 'DRAFT', 'ANALYSIS', 'PENDING', 'BACKEND') 
+                AND wsi.booking_date != '0000-00-00 00:00:00'
+                AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) > 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_manja_3plus_hours
+        "))
+        ->where([
+            ['wsi.source_ticket', 'CUSTOMER'],
+            // ['wsi.service_type', 'NON-NUMBERING'],
+            ['wsi.solution', '!=', 'CABUT/DEACTIVE'],
+            ['wsi.related_to_gamas', 'NO'],
+            ['wsi.summary', 'NOT LIKE', '%Z_PERMINTAAN%']
+        ])
+        ->whereDate('wsi.date_reported', date('Y-m-d'))
+        ->groupBy('wsi.witel')
+        ->get();
+    }
+
+    public static function ttr_comply_notcomply_closed()
+    {
+        $witel = session('auth')->witel_name;
+
+        $reported_date = 'wsi.reported_date';
+
+        $booking_date = 'wsi.booking_date';
+        
+        if (in_array($witel, ['KALSEL', 'BALIKPAPAN']))
+        {
+            $reported_date = "DATE_ADD(wsi.reported_date, INTERVAL 1 HOUR)";
+            
+            $booking_date = "DATE_ADD(wsi.booking_date, INTERVAL 1 HOUR)";
+
+            $datenow = "NOW()";
+        }
+        else
+        {
+            $datenow = "DATE_ADD(NOW(), INTERVAL 1 HOUR)";
+        }
+
+        return DB::table('wmcr_source_insera AS wsi')
+        ->leftJoin('wmcr_master_sto AS wms', 'wsi.workzone', '=', 'wms.name')
+        ->select(DB::raw("
+            wsi.witel,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_VVIP'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 60) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_vvip_1hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_VVIP'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 60 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 120) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_vvip_2hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_VVIP'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 120 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_vvip_3hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_VVIP'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_vvip_3plus_hours,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_DIAMOND'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 60) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_diamond_1hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_DIAMOND'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 60 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 120) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_diamond_2hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_DIAMOND'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 120 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_diamond_3hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_DIAMOND'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_diamond_3plus_hours,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_PLATINUM'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 60) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_platinum_1hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_PLATINUM'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 60 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_platinum_3hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_PLATINUM'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 180 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 360) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_platinum_6hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type = 'HVC_PLATINUM'
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 360) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_platinum_6plus_hours,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 360) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_gsr_6hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 360 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 720) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_gsr_12hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 720 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 1440) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_gsr_24hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
+                AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 1440 
+                AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 2160)
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_gsr_36hours,
+
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.booking_date != '0000-00-00 00:00:00'
+                AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) >= 0 
+                AND TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) <= 60) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_manja_1hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.booking_date != '0000-00-00 00:00:00'
+                AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) > 60 
+                AND TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) <= 120) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_manja_2hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.booking_date != '0000-00-00 00:00:00'
+                AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) > 120 
+                AND TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) <= 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_manja_3hours,
+            SUM(CASE 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                AND wsi.booking_date != '0000-00-00 00:00:00'
+                AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) > 180) 
+                THEN 1 
+                ELSE 0 
+            END) AS ttr_manja_3plus_hours
+        "))
+        ->where([
+            ['wsi.source_ticket', 'CUSTOMER'],
+            // ['wsi.service_type', 'NON-NUMBERING'],
+            ['wsi.solution', '!=', 'CABUT/DEACTIVE'],
+            ['wsi.related_to_gamas', 'NO'],
+            ['wsi.summary', 'NOT LIKE', '%Z_PERMINTAAN%']
+        ])
+        ->whereDate('wsi.date_reported', date('Y-m-d'))
+        ->groupBy('wsi.witel')
+        ->get();
+    }
+
     public static function dashboard_produktif($start_date, $end_date)
     {
-      return DB::connection('t1')
-      ->select('
-          SELECT
-            md.sektor_prov AS sektor,
-            (
-              SELECT
-                COUNT(*)
-              FROM 1_2_employee emp
-              LEFT JOIN absen ab ON emp.nik = ab.nik
-              LEFT JOIN group_telegram gtt ON emp.mainsector = gtt.chat_id
-              WHERE
-                gtt.ket_posisi = "PROV" AND
-                gtt.id NOT IN (97, 103) AND
-                emp.posisi_id = 1 AND
-                DATE(ab.date_created) = "'.date('Y-m-d').'" AND
-                gtt.title = md.sektor_prov
-            ) AS jml_teknisi,
+        return DB::connection('t1')
+        ->select('
+            SELECT
+                md.sektor_prov AS sektor,
+                (
+                SELECT
+                    COUNT(*)
+                FROM 1_2_employee emp
+                LEFT JOIN absen ab ON emp.nik = ab.nik
+                LEFT JOIN group_telegram gtt ON emp.mainsector = gtt.chat_id
+                WHERE
+                    gtt.ket_posisi = "PROV" AND
+                    gtt.id NOT IN (97, 103) AND
+                    emp.posisi_id = 1 AND
+                    DATE(ab.date_created) = "'.date('Y-m-d').'" AND
+                    gtt.title = md.sektor_prov
+                ) AS jml_teknisi,
 
-            SUM(CASE WHEN pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "2P (Inet+Voice) [PSB]", "1P (Voice) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "1P (Inet) [BYOD]") THEN 1 ELSE 0 END) AS order_ao,
-            SUM(CASE WHEN pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan = "1P (Inet) + Orbit [PSB]" THEN 1 ELSE 0 END) AS order_orbit,
-            SUM(CASE WHEN pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [SettingOnly]", "ONT_PREMIUM", "STB 1st [ADDON]", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "1P (Voice) [PSB]", "CABUT_NTE", "ONT_PREMIUM", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "STB 3rd [ADDON]", "3P (Inet+Voice+Useetv) [SettingOnly]", "WIFI EXT 1st [ADDON]", "1P (Voice) [SettingOnly]") THEN 1 ELSE 0 END) AS order_addon,
-            SUM(CASE WHEN pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [PDA]", "3P (Inet+Voice+Useetv) [PDA]", "1P (Inet) [PDA]", "2P (Inet+Voice) [PDA]", "2P (Inet+Useetv) [PDA]", "1P (Voice) [PDA]") THEN 1 ELSE 0 END) AS order_pda,
+                SUM(CASE WHEN pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "2P (Inet+Voice) [PSB]", "1P (Voice) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "1P (Inet) [BYOD]") THEN 1 ELSE 0 END) AS order_ao,
+                SUM(CASE WHEN pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan = "1P (Inet) + Orbit [PSB]" THEN 1 ELSE 0 END) AS order_orbit,
+                SUM(CASE WHEN pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [SettingOnly]", "ONT_PREMIUM", "STB 1st [ADDON]", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "1P (Voice) [PSB]", "CABUT_NTE", "ONT_PREMIUM", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "STB 3rd [ADDON]", "3P (Inet+Voice+Useetv) [SettingOnly]", "WIFI EXT 1st [ADDON]", "1P (Voice) [SettingOnly]") THEN 1 ELSE 0 END) AS order_addon,
+                SUM(CASE WHEN pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [PDA]", "3P (Inet+Voice+Useetv) [PDA]", "1P (Inet) [PDA]", "2P (Inet+Voice) [PDA]", "2P (Inet+Useetv) [PDA]", "1P (Voice) [PDA]") THEN 1 ELSE 0 END) AS order_pda,
 
-            SUM(CASE WHEN dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "2P (Inet+Voice) [PSB]", "1P (Voice) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "1P (Inet) [BYOD]") THEN 1 ELSE 0 END) AS ps_ao,
-            SUM(CASE WHEN dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan = "1P (Inet) + Orbit [PSB]" THEN 1 ELSE 0 END) AS ps_orbit,
-            SUM(CASE WHEN dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [SettingOnly]", "ONT_PREMIUM", "STB 1st [ADDON]", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "1P (Voice) [PSB]", "CABUT_NTE", "ONT_PREMIUM", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "STB 3rd [ADDON]", "3P (Inet+Voice+Useetv) [SettingOnly]", "WIFI EXT 1st [ADDON]", "1P (Voice) [SettingOnly]") THEN 1 ELSE 0 END) AS ps_addon,
-            SUM(CASE WHEN dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [PDA]", "3P (Inet+Voice+Useetv) [PDA]", "1P (Inet) [PDA]", "2P (Inet+Voice) [PDA]", "2P (Inet+Useetv) [PDA]", "1P (Voice) [PDA]") THEN 1 ELSE 0 END) AS ps_pda,
+                SUM(CASE WHEN dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "2P (Inet+Voice) [PSB]", "1P (Voice) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "1P (Inet) [BYOD]") THEN 1 ELSE 0 END) AS ps_ao,
+                SUM(CASE WHEN dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan = "1P (Inet) + Orbit [PSB]" THEN 1 ELSE 0 END) AS ps_orbit,
+                SUM(CASE WHEN dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [SettingOnly]", "ONT_PREMIUM", "STB 1st [ADDON]", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "1P (Voice) [PSB]", "CABUT_NTE", "ONT_PREMIUM", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "STB 3rd [ADDON]", "3P (Inet+Voice+Useetv) [SettingOnly]", "WIFI EXT 1st [ADDON]", "1P (Voice) [SettingOnly]") THEN 1 ELSE 0 END) AS ps_addon,
+                SUM(CASE WHEN dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [PDA]", "3P (Inet+Voice+Useetv) [PDA]", "1P (Inet) [PDA]", "2P (Inet+Voice) [PDA]", "2P (Inet+Useetv) [PDA]", "1P (Voice) [PDA]") THEN 1 ELSE 0 END) AS ps_pda,
 
-            SUM(CASE WHEN pls.grup = "KP" THEN 1 ELSE 0 END) AS order_kp,
-            SUM(CASE WHEN pls.grup = "KT" AND pls.laporan_status NOT IN ("ODP FULL", "ODP LOSS", "INSERT TIANG") THEN 1 ELSE 0 END) AS order_kt
-          FROM Data_Pelanggan_Starclick dps
-          LEFT JOIN maintenance_datel md ON dps.sto = md.sto
-          LEFT JOIN dispatch_teknisi dt ON dps.orderIdInteger = dt.NO_ORDER
-          LEFT JOIN psb_laporan pl ON dt.id = pl.id_tbl_mj
-          LEFT JOIN psb_laporan_status pls ON pl.status_laporan = pls.laporan_status_id
-          LEFT JOIN regu r ON dt.id_regu = r.id_regu
-          LEFT JOIN group_telegram gt ON r.mainsector = gt.chat_id
-          WHERE
-            (pls.grup IS NOT NULL OR pls.grup NOT IN ("CABUT_NTE", "ONT_PREMIUM")) AND
-            (DATE(dps.orderDate) BETWEEN "'.$start_date.'" AND "'.$end_date.'")
-          GROUP BY md.sektor_prov
-      ');
+                SUM(CASE WHEN pls.grup = "KP" THEN 1 ELSE 0 END) AS order_kp,
+                SUM(CASE WHEN pls.grup = "KT" AND pls.laporan_status NOT IN ("ODP FULL", "ODP LOSS", "INSERT TIANG") THEN 1 ELSE 0 END) AS order_kt
+            FROM Data_Pelanggan_Starclick dps
+            LEFT JOIN maintenance_datel md ON dps.sto = md.sto
+            LEFT JOIN dispatch_teknisi dt ON dps.orderIdInteger = dt.NO_ORDER
+            LEFT JOIN psb_laporan pl ON dt.id = pl.id_tbl_mj
+            LEFT JOIN psb_laporan_status pls ON pl.status_laporan = pls.laporan_status_id
+            LEFT JOIN regu r ON dt.id_regu = r.id_regu
+            LEFT JOIN group_telegram gt ON r.mainsector = gt.chat_id
+            WHERE
+                (pls.grup IS NOT NULL OR pls.grup NOT IN ("CABUT_NTE", "ONT_PREMIUM")) AND
+                (DATE(dps.orderDate) BETWEEN "'.$start_date.'" AND "'.$end_date.'")
+            GROUP BY md.sektor_prov
+        ');
     }
 
     public static function dashboard_produktif_detail($sektor, $status, $start_date, $end_date)
     {
-      $where_sektor = $where_status = '';
+        $where_sektor = $where_status = '';
 
-      if ($sektor != 'all')
-      {
-        if ($status != 'teknisi')
+        if ($sektor != 'all')
         {
-          $where_sektor = 'AND md.sektor_prov = "'.$sektor.'"';
+            if ($status != 'teknisi')
+            {
+            $where_sektor = 'AND md.sektor_prov = "'.$sektor.'"';
+            }
+            else
+            {
+            $where_sektor = 'AND gtt.title = "'.$sektor.'"';
+            }
+        }
+
+        if ($status == 'teknisi')
+        {
+            $data = DB::connection('t1')
+            ->select('
+            SELECT
+                gtt.title AS sektor,
+                ab.date_created AS tgl_absen,
+                emp.*
+            FROM 1_2_employee emp
+            LEFT JOIN absen ab ON emp.nik = ab.nik
+            LEFT JOIN group_telegram gtt ON emp.mainsector = gtt.chat_id
+            WHERE
+                gtt.ket_posisi = "PROV" AND
+                gtt.id NOT IN (97, 103) AND
+                emp.posisi_id = 1 AND
+                DATE(ab.date_created) = "'.date('Y-m-d').'"
+                '.$where_sektor.'
+            ');
         }
         else
         {
-          $where_sektor = 'AND gtt.title = "'.$sektor.'"';
-        }
-      }
+            switch ($status) {
+            case 'order_ao':
+                $where_status = 'AND pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "2P (Inet+Voice) [PSB]", "1P (Voice) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "1P (Inet) [BYOD]")';
+                break;
+            case 'order_orbit':
+                $where_status = 'AND pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan = "1P (Inet) + Orbit [PSB]"';
+                break;
+            case 'order_addon':
+                $where_status = 'AND pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [SettingOnly]", "ONT_PREMIUM", "STB 1st [ADDON]", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "1P (Voice) [PSB]", "CABUT_NTE", "ONT_PREMIUM", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "STB 3rd [ADDON]", "3P (Inet+Voice+Useetv) [SettingOnly]", "WIFI EXT 1st [ADDON]", "1P (Voice) [SettingOnly]")';
+                break;
+            case 'order_pda':
+                $where_status = 'AND pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [PDA]", "3P (Inet+Voice+Useetv) [PDA]", "1P (Inet) [PDA]", "2P (Inet+Voice) [PDA]", "2P (Inet+Useetv) [PDA]", "1P (Voice) [PDA]")';
+                break;
 
-      if ($status == 'teknisi')
-      {
-        $data = DB::connection('t1')
-        ->select('
-          SELECT
-            gtt.title AS sektor,
-            ab.date_created AS tgl_absen,
-            emp.*
-          FROM 1_2_employee emp
-          LEFT JOIN absen ab ON emp.nik = ab.nik
-          LEFT JOIN group_telegram gtt ON emp.mainsector = gtt.chat_id
-          WHERE
-            gtt.ket_posisi = "PROV" AND
-            gtt.id NOT IN (97, 103) AND
-            emp.posisi_id = 1 AND
-            DATE(ab.date_created) = "'.date('Y-m-d').'"
-            '.$where_sektor.'
-        ');
-      }
-      else
-      {
-        switch ($status) {
-          case 'order_ao':
-              $where_status = 'AND pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "2P (Inet+Voice) [PSB]", "1P (Voice) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "1P (Inet) [BYOD]")';
-            break;
-          case 'order_orbit':
-              $where_status = 'AND pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan = "1P (Inet) + Orbit [PSB]"';
-            break;
-          case 'order_addon':
-              $where_status = 'AND pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [SettingOnly]", "ONT_PREMIUM", "STB 1st [ADDON]", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "1P (Voice) [PSB]", "CABUT_NTE", "ONT_PREMIUM", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "STB 3rd [ADDON]", "3P (Inet+Voice+Useetv) [SettingOnly]", "WIFI EXT 1st [ADDON]", "1P (Voice) [SettingOnly]")';
-            break;
-          case 'order_pda':
-              $where_status = 'AND pls.laporan_status IN ("NEED PROGRESS", "BERANGKAT", "TIBA", "OGP", "PROSES SETTING", "ODP FULL", "ODP LOSS", "INSERT TIANG") AND dt.jenis_layanan IN ("1P (Inet) [PDA]", "3P (Inet+Voice+Useetv) [PDA]", "1P (Inet) [PDA]", "2P (Inet+Voice) [PDA]", "2P (Inet+Useetv) [PDA]", "1P (Voice) [PDA]")';
-            break;
-  
-          case 'ps_ao':
-              $where_status = 'AND dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "2P (Inet+Voice) [PSB]", "1P (Voice) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "1P (Inet) [BYOD]")';
-            break;
-          case 'ps_orbit':
-              $where_status = 'AND dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan = "1P (Inet) + Orbit [PSB]"';
-            break;
-          case 'ps_addon':
-              $where_status = 'AND dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [SettingOnly]", "ONT_PREMIUM", "STB 1st [ADDON]", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "1P (Voice) [PSB]", "CABUT_NTE", "ONT_PREMIUM", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "STB 3rd [ADDON]", "3P (Inet+Voice+Useetv) [SettingOnly]", "WIFI EXT 1st [ADDON]", "1P (Voice) [SettingOnly]")';
-            break;
-          case 'ps_pda':
-              $where_status = 'AND dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [PDA]", "3P (Inet+Voice+Useetv) [PDA]", "1P (Inet) [PDA]", "2P (Inet+Voice) [PDA]", "2P (Inet+Useetv) [PDA]", "1P (Voice) [PDA]")';
-            break;
-  
-          case 'order_kp':
-              $where_status = 'AND pls.grup = "KP"';
-            break;
-  
-          case 'order_kt':
-              $where_status = 'AND pls.grup = "KT" AND pls.laporan_status NOT IN ("ODP FULL", "ODP LOSS", "INSERT TIANG")';
-            break;
-          default:
-              # code...
-            break;
-        }
-  
-        $data = DB::connection('t1')
-        ->select('
-          SELECT
-            dps.sto,
-            md.sektor_prov AS sektor,
-            dps.orderId,
-            dps.orderName,
-            dps.orderDate,
-            dps.orderDatePS,
-            dps.orderStatus,
-            dps.jenisPsb,
-            dps.provider
-          FROM Data_Pelanggan_Starclick dps
-          LEFT JOIN maintenance_datel md ON dps.sto = md.sto
-          LEFT JOIN dispatch_teknisi dt ON dps.orderIdInteger = dt.NO_ORDER
-          LEFT JOIN psb_laporan pl ON dt.id = pl.id_tbl_mj
-          LEFT JOIN psb_laporan_status pls ON pl.status_laporan = pls.laporan_status_id
-          LEFT JOIN regu r ON dt.id_regu = r.id_regu
-          LEFT JOIN group_telegram gt ON r.mainsector = gt.chat_id
-          WHERE
-            (pls.grup IS NOT NULL OR pls.grup NOT IN ("CABUT_NTE", "ONT_PREMIUM"))
-            '.$where_sektor.'
-            '.$where_status.'
-            AND (DATE(dps.orderDate) BETWEEN "'.$start_date.'" AND "'.$end_date.'")
-        ');
-      }
+            case 'ps_ao':
+                $where_status = 'AND dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "1P (Inet) [PSB]", "2P (Inet+Useetv) [PSB]", "2P (Inet+Voice) [PSB]", "1P (Voice) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "3P (Inet+Voice+Useetv) [PSB]", "1P (Inet) [BYOD]")';
+                break;
+            case 'ps_orbit':
+                $where_status = 'AND dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan = "1P (Inet) + Orbit [PSB]"';
+                break;
+            case 'ps_addon':
+                $where_status = 'AND dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [SettingOnly]", "ONT_PREMIUM", "STB 1st [ADDON]", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "1P (Voice) [PSB]", "CABUT_NTE", "ONT_PREMIUM", "PLC 1st [ADDON]", "STB 2nd [ADDON]", "STB 3rd [ADDON]", "3P (Inet+Voice+Useetv) [SettingOnly]", "WIFI EXT 1st [ADDON]", "1P (Voice) [SettingOnly]")';
+                break;
+            case 'ps_pda':
+                $where_status = 'AND dps.orderStatus IN ("COMPLETED", "Completed (PS)") AND dt.jenis_layanan IN ("1P (Inet) [PDA]", "3P (Inet+Voice+Useetv) [PDA]", "1P (Inet) [PDA]", "2P (Inet+Voice) [PDA]", "2P (Inet+Useetv) [PDA]", "1P (Voice) [PDA]")';
+                break;
 
-      return $data;
+            case 'order_kp':
+                $where_status = 'AND pls.grup = "KP"';
+                break;
+
+            case 'order_kt':
+                $where_status = 'AND pls.grup = "KT" AND pls.laporan_status NOT IN ("ODP FULL", "ODP LOSS", "INSERT TIANG")';
+                break;
+            default:
+                # code...
+                break;
+            }
+
+            $data = DB::connection('t1')
+            ->select('
+            SELECT
+                dps.sto,
+                md.sektor_prov AS sektor,
+                dps.orderId,
+                dps.orderName,
+                dps.orderDate,
+                dps.orderDatePS,
+                dps.orderStatus,
+                dps.jenisPsb,
+                dps.provider
+            FROM Data_Pelanggan_Starclick dps
+            LEFT JOIN maintenance_datel md ON dps.sto = md.sto
+            LEFT JOIN dispatch_teknisi dt ON dps.orderIdInteger = dt.NO_ORDER
+            LEFT JOIN psb_laporan pl ON dt.id = pl.id_tbl_mj
+            LEFT JOIN psb_laporan_status pls ON pl.status_laporan = pls.laporan_status_id
+            LEFT JOIN regu r ON dt.id_regu = r.id_regu
+            LEFT JOIN group_telegram gt ON r.mainsector = gt.chat_id
+            WHERE
+                (pls.grup IS NOT NULL OR pls.grup NOT IN ("CABUT_NTE", "ONT_PREMIUM"))
+                '.$where_sektor.'
+                '.$where_status.'
+                AND (DATE(dps.orderDate) BETWEEN "'.$start_date.'" AND "'.$end_date.'")
+            ');
+        }
+
+        return $data;
     }
 
-    public static function getListTickets($witel,$status)
+    public static function getListTickets($witel, $status)
     {
         if ($witel == "ALL")
         {
@@ -435,5 +799,4 @@ class DashboardModel
         return $query;
     }
 }
-
 ?>

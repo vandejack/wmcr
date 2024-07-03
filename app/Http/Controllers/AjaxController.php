@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\DashboardModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\Models\EmployeeModel;
 use App\Models\MasterModel;
 use App\Models\SectorModel;
 use App\Models\OrderModel;
+use App\Models\DashboardModel;
 
 date_default_timezone_set("Asia/Makassar");
 
@@ -470,77 +470,11 @@ class AjaxController extends Controller
         return response()->json($result);
     }
 
-    public function trr_hvc()
-    {
-        $jml_ttr_hours = $ttl_ttr_0hours = $ttl_ttr_1hours = $ttl_ttr_2hours = $ttl_ttr_3hours = $ttl_ttr_hours = $jml_comply_notcomply = $ttl_comply = $ttl_notcomply = $ttl_comply_notcomply = $percent_comply = $ttl_percent_comply = $ttl_percent_notcomply = $percent_notcomply = 0;
-
-        $data = DashboardModel::ttr_hvc('ALL');
-        $result = ['data' => [], 'footer' => []];
-
-        foreach ($data as $k => $v)
-        {
-            $jml_ttr_hours        = $v->ttr_0hours + $v->ttr_1hours + $v->ttr_2hours + $v->ttr_3hours;
-            $ttl_ttr_0hours       += $v->ttr_0hours;
-            $ttl_ttr_1hours       += $v->ttr_1hours;
-            $ttl_ttr_2hours       += $v->ttr_2hours;
-            $ttl_ttr_3hours       += $v->ttr_3hours;
-            $ttl_ttr_hours        += $jml_ttr_hours;
-
-            $jml_comply_notcomply = $v->ttr_comply + $v->ttr_notcomply;
-            $ttl_comply           += $v->ttr_comply;
-            $ttl_notcomply        += $v->ttr_notcomply;
-            $ttl_comply_notcomply += $jml_comply_notcomply;
-
-            if ($jml_comply_notcomply > 0)
-            {
-                $percent_comply = round(($v->ttr_comply / $jml_comply_notcomply) * 100, 2);
-                $percent_notcomply = round(($v->ttr_notcomply / $jml_comply_notcomply) * 100, 2);
-            }
-
-            $percent_comply = is_nan($percent_comply) ? 0 : $percent_comply;
-            $percent_notcomply = is_nan($percent_notcomply) ? 0 : $percent_notcomply;
- 
-            $result['data'][$k][] = $v->witel;
-            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_0hours));
-            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_1hours));
-            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_2hours));
-            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_3hours));
-            $result['data'][$k][] = str_replace(',', '.', number_format($jml_ttr_hours));
-            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_comply));
-            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_notcomply));
-            $result['data'][$k][] = $percent_comply." %";
-            $result['data'][$k][] = $percent_notcomply. " %";
-            $k++;
-        }
-
-        if ($ttl_comply_notcomply > 0)
-        {
-            $ttl_percent_comply = round(($ttl_comply / $ttl_comply_notcomply) * 100, 2);
-            $ttl_percent_notcomply = round(($ttl_notcomply / $ttl_comply_notcomply) * 100, 2);
-        }
-
-        $ttl_percent_comply = is_nan($ttl_percent_comply) ? 0 : $ttl_percent_comply;
-        $ttl_percent_notcomply = is_nan($ttl_percent_notcomply) ? 0 : $ttl_percent_notcomply;
-
-
-        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_0hours)).'</b>';
-        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_1hours)).'</b>';
-        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_2hours)).'</b>';
-        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_3hours)).'</b>';
-        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_hours)).'</b>';
-        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_comply)).'</b>';
-        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_notcomply)).'</b>';
-        $result['footer'][] = '<b>'.$ttl_percent_comply.' %</b>';
-        $result['footer'][] = '<b>'.$ttl_percent_notcomply.' %</b>';
-
-        return response()->json($result);
-    }
-
     public function productivity_order()
     {
         $jml_tsel = $jml_ao_tsel = $jml_orbit_tsel = $jml_mo_tsel = $jml_pda_tsel = $ttl_tsel = 
         $jml_tlkm = $jml_ao_tlkm = $jml_orbit_tlkm = $jml_mo_tlkm = $jml_pda_tlkm = $ttl_tlkm =
-        $jml_insera_b2c = $jml_insera_b2c_vvip = $jml_insera_b2c_diamond = $jml_insera_b2c_platinum = $jml_insera_b2c_gold = $jml_insera_b2c_reguler = $jml_insera_b2c_proactive = $ttl_insera_b2c =
+        $jml_insera_b2c = $jml_insera_b2c_vvip = $jml_insera_b2c_diamond = $jml_insera_b2c_platinum = $jml_insera_b2c_gold = $jml_insera_b2c_reguler = $jml_insera_b2c_unspec = $jml_insera_b2c_sqm = $ttl_insera_b2c =
         $jml_insera_b2b = $jml_insera_b2b_des = $jml_insera_b2b_dbs = $jml_insera_b2b_dgs = $jml_insera_b2b_dps = $jml_insera_b2b_dss = $jml_insera_b2b_reg = $jml_insera_b2b_dws = $jml_insera_b2b_taw = $ttl_insera_b2b = 0;
 
         $data = DashboardModel::productivity_order();
@@ -549,39 +483,40 @@ class AjaxController extends Controller
 
         foreach ($data as $witel => $value)
         {
-            $jml_tsel                 =  (@$value['ao_tsel'] + @$value['orbit_tsel'] + @$value['mo_tsel'] + @$value['pda_tsel']);
-            $jml_ao_tsel              += @$value['ao_tsel'];
-            $jml_orbit_tsel           += @$value['orbit_tsel'];
-            $jml_mo_tsel              += @$value['mo_tsel'];
-            $jml_pda_tsel             += @$value['pda_tsel'];
-            $ttl_tsel                 += $jml_tsel;
+            $jml_tsel                =  (@$value['ao_tsel'] + @$value['orbit_tsel'] + @$value['mo_tsel'] + @$value['pda_tsel']);
+            $jml_ao_tsel             += @$value['ao_tsel'];
+            $jml_orbit_tsel          += @$value['orbit_tsel'];
+            $jml_mo_tsel             += @$value['mo_tsel'];
+            $jml_pda_tsel            += @$value['pda_tsel'];
+            $ttl_tsel                += $jml_tsel;
 
-            $jml_tlkm                 =  (@$value['ao_tlkm'] + @$value['orbit_tlkm'] + @$value['mo_tlkm'] + @$value['pda_tlkm']);
-            $jml_ao_tlkm              += @$value['ao_tlkm'];
-            $jml_orbit_tlkm           += @$value['orbit_tlkm'];
-            $jml_mo_tlkm              += @$value['mo_tlkm'];
-            $jml_pda_tlkm             += @$value['pda_tlkm'];
-            $ttl_tlkm                 += $jml_tlkm;
+            $jml_tlkm                =  (@$value['ao_tlkm'] + @$value['orbit_tlkm'] + @$value['mo_tlkm'] + @$value['pda_tlkm']);
+            $jml_ao_tlkm             += @$value['ao_tlkm'];
+            $jml_orbit_tlkm          += @$value['orbit_tlkm'];
+            $jml_mo_tlkm             += @$value['mo_tlkm'];
+            $jml_pda_tlkm            += @$value['pda_tlkm'];
+            $ttl_tlkm                += $jml_tlkm;
 
-            $jml_insera_b2c           =  (@$value['insera_b2c_vvip'] + @$value['insera_b2c_diamond'] + @$value['insera_b2c_platinum'] + @$value['insera_b2c_gold'] + @$value['insera_b2c_reguler'] + @$value['insera_b2c_proactive']);
-            $jml_insera_b2c_vvip      += @$value['insera_b2c_vvip'];
-            $jml_insera_b2c_diamond   += @$value['insera_b2c_diamond'];
-            $jml_insera_b2c_platinum  += @$value['insera_b2c_platinum'];
-            $jml_insera_b2c_gold      += @$value['insera_b2c_gold'];
-            $jml_insera_b2c_reguler   += @$value['insera_b2c_reguler'];
-            $jml_insera_b2c_proactive += @$value['insera_b2c_proactive'];
-            $ttl_insera_b2c           += $jml_insera_b2c;
+            $jml_insera_b2c          =  (@$value['insera_b2c_vvip'] + @$value['insera_b2c_diamond'] + @$value['insera_b2c_platinum'] + @$value['insera_b2c_gold'] + @$value['insera_b2c_reguler'] + @$value['insera_b2c_unspec'] + @$value['insera_b2c_sqm']);
+            $jml_insera_b2c_vvip     += @$value['insera_b2c_vvip'];
+            $jml_insera_b2c_diamond  += @$value['insera_b2c_diamond'];
+            $jml_insera_b2c_platinum += @$value['insera_b2c_platinum'];
+            $jml_insera_b2c_gold     += @$value['insera_b2c_gold'];
+            $jml_insera_b2c_reguler  += @$value['insera_b2c_reguler'];
+            $jml_insera_b2c_unspec   += @$value['insera_b2c_unspec'];
+            $jml_insera_b2c_sqm      += @$value['insera_b2c_sqm'];
+            $ttl_insera_b2c          += $jml_insera_b2c;
 
-            $jml_insera_b2b           =  (@$value['insera_b2b_des'] + @$value['insera_b2b_dbs'] + @$value['insera_b2b_dgs'] + @$value['insera_b2b_dps'] + @$value['insera_b2b_dss'] + @$value['insera_b2b_reg'] + @$value['insera_b2b_dws'] + @$value['insera_b2b_taw']);
-            $jml_insera_b2b_des       += @$value['insera_b2b_des'];
-            $jml_insera_b2b_dbs       += @$value['insera_b2b_dbs'];
-            $jml_insera_b2b_dgs       += @$value['insera_b2b_dgs'];
-            $jml_insera_b2b_dps       += @$value['insera_b2b_dps'];
-            $jml_insera_b2b_dss       += @$value['insera_b2b_dss'];
-            $jml_insera_b2b_reg       += @$value['insera_b2b_reg'];
-            $jml_insera_b2b_dws       += @$value['insera_b2b_dws'];
-            $jml_insera_b2b_taw       += @$value['insera_b2b_taw'];
-            $ttl_insera_b2b           += $jml_insera_b2b;
+            $jml_insera_b2b          =  (@$value['insera_b2b_des'] + @$value['insera_b2b_dbs'] + @$value['insera_b2b_dgs'] + @$value['insera_b2b_dps'] + @$value['insera_b2b_dss'] + @$value['insera_b2b_reg'] + @$value['insera_b2b_dws'] + @$value['insera_b2b_taw']);
+            $jml_insera_b2b_des      += @$value['insera_b2b_des'];
+            $jml_insera_b2b_dbs      += @$value['insera_b2b_dbs'];
+            $jml_insera_b2b_dgs      += @$value['insera_b2b_dgs'];
+            $jml_insera_b2b_dps      += @$value['insera_b2b_dps'];
+            $jml_insera_b2b_dss      += @$value['insera_b2b_dss'];
+            $jml_insera_b2b_reg      += @$value['insera_b2b_reg'];
+            $jml_insera_b2b_dws      += @$value['insera_b2b_dws'];
+            $jml_insera_b2b_taw      += @$value['insera_b2b_taw'];
+            $ttl_insera_b2b          += $jml_insera_b2b;
 
             $result['data'][] = [
                 $witel,
@@ -602,7 +537,8 @@ class AjaxController extends Controller
                 str_replace(',', '.', number_format(@$value['insera_b2c_platinum'])),
                 str_replace(',', '.', number_format(@$value['insera_b2c_gold'])),
                 str_replace(',', '.', number_format(@$value['insera_b2c_reguler'])),
-                str_replace(',', '.', number_format(@$value['insera_b2c_proactive'])),
+                str_replace(',', '.', number_format(@$value['insera_b2c_unspec'])),
+                str_replace(',', '.', number_format(@$value['insera_b2c_sqm'])),
                 str_replace(',', '.', number_format($jml_insera_b2c)),
 
                 str_replace(',', '.', number_format(@$value['insera_b2b_des'])),
@@ -634,7 +570,8 @@ class AjaxController extends Controller
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_platinum)).'</b>';
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_gold)).'</b>';
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_reguler)).'</b>';
-        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_proactive)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_unspec)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2c_sqm)).'</b>';
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_insera_b2c)).'</b>';
 
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_des)).'</b>';
@@ -646,6 +583,206 @@ class AjaxController extends Controller
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_dws)).'</b>';
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($jml_insera_b2b_taw)).'</b>';
         $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_insera_b2b)).'</b>';
+
+        return response()->json($result);
+    }
+
+    public function ttr_comply_notcomply_open()
+    {
+        $jml_ttr_vvip = $ttl_ttr_vvip_1hours = $ttl_ttr_vvip_2hours = $ttl_ttr_vvip_3hours = $ttl_ttr_vvip_3plus_hours =
+        $jml_ttr_diamond = $ttl_ttr_diamond_1hours = $ttl_ttr_diamond_2hours = $ttl_ttr_diamond_3hours = $ttl_ttr_diamond_3plus_hours =
+        $jml_ttr_platinum = $ttl_ttr_platinum_1hours = $ttl_ttr_platinum_3hours = $ttl_ttr_platinum_6hours = $ttl_ttr_platinum_6plus_hours =
+        $jml_ttr_gsr = $ttl_ttr_gsr_6hours = $ttl_ttr_gsr_12hours = $ttl_ttr_gsr_24hours = $ttl_ttr_gsr_36hours =
+        $jml_ttr_manja = $ttl_ttr_manja_1hours = $ttl_ttr_manja_2hours = $ttl_ttr_manja_3hours = $ttl_ttr_manja_3plus_hours = 0;
+
+        $data = DashboardModel::ttr_comply_notcomply_open();
+
+        $result = ['data' => [], 'footer' => []];
+
+        foreach ($data as $k => $v)
+        {
+            $jml_ttr_vvip                 =  $v->ttr_vvip_1hours + $v->ttr_vvip_2hours + $v->ttr_vvip_3hours + $v->ttr_vvip_3plus_hours;
+            $ttl_ttr_vvip_1hours          += $v->ttr_vvip_1hours;
+            $ttl_ttr_vvip_2hours          += $v->ttr_vvip_2hours;
+            $ttl_ttr_vvip_3hours          += $v->ttr_vvip_3hours;
+            $ttl_ttr_vvip_3plus_hours     += $v->ttr_vvip_3plus_hours;
+
+            $jml_ttr_diamond              =  $v->ttr_diamond_1hours + $v->ttr_diamond_2hours + $v->ttr_diamond_3hours + $v->ttr_diamond_3plus_hours;
+            $ttl_ttr_diamond_1hours       += $v->ttr_diamond_1hours;
+            $ttl_ttr_diamond_2hours       += $v->ttr_diamond_2hours;
+            $ttl_ttr_diamond_3hours       += $v->ttr_diamond_3hours;
+            $ttl_ttr_diamond_3plus_hours  += $v->ttr_diamond_3plus_hours;
+
+            $jml_ttr_platinum             =  $v->ttr_platinum_1hours + $v->ttr_platinum_3hours + $v->ttr_platinum_6hours + $v->ttr_platinum_6plus_hours;
+            $ttl_ttr_platinum_1hours      += $v->ttr_platinum_1hours;
+            $ttl_ttr_platinum_3hours      += $v->ttr_platinum_3hours;
+            $ttl_ttr_platinum_6hours      += $v->ttr_platinum_6hours;
+            $ttl_ttr_platinum_6plus_hours += $v->ttr_platinum_6plus_hours;
+
+            $jml_ttr_gsr                  =  $v->ttr_gsr_6hours + $v->ttr_gsr_12hours + $v->ttr_gsr_24hours + $v->ttr_gsr_36hours;
+            $ttl_ttr_gsr_6hours           += $v->ttr_gsr_6hours;
+            $ttl_ttr_gsr_12hours          += $v->ttr_gsr_12hours;
+            $ttl_ttr_gsr_24hours          += $v->ttr_gsr_24hours;
+            $ttl_ttr_gsr_36hours          += $v->ttr_gsr_36hours;
+
+            $jml_ttr_manja                =  $v->ttr_manja_1hours + $v->ttr_manja_2hours + $v->ttr_manja_3hours + $v->ttr_manja_3plus_hours;
+            $ttl_ttr_manja_1hours         += $v->ttr_manja_1hours;
+            $ttl_ttr_manja_2hours         += $v->ttr_manja_2hours;
+            $ttl_ttr_manja_3hours         += $v->ttr_manja_3hours;
+            $ttl_ttr_manja_3plus_hours    += $v->ttr_manja_3plus_hours;
+
+            $result['data'][$k][] = $v->witel;
+            
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_vvip_1hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_vvip_2hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_vvip_3hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_vvip_3plus_hours));
+
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_diamond_1hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_diamond_2hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_diamond_3hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_diamond_3plus_hours));
+
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_platinum_1hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_platinum_3hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_platinum_6hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_platinum_6plus_hours));
+
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_gsr_6hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_gsr_12hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_gsr_24hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_gsr_36hours));
+
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_manja_1hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_manja_2hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_manja_3hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_manja_3plus_hours));
+        }
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_vvip_1hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_vvip_2hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_vvip_3hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_vvip_3plus_hours)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_diamond_1hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_diamond_2hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_diamond_3hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_diamond_3plus_hours)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_platinum_1hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_platinum_3hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_platinum_6hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_platinum_6plus_hours)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_gsr_6hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_gsr_12hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_gsr_24hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_gsr_36hours)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_manja_1hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_manja_2hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_manja_3hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_manja_3plus_hours)).'</b>';
+
+        return response()->json($result);
+    }
+
+    public function ttr_comply_notcomply_closed()
+    {
+        $jml_ttr_vvip = $ttl_ttr_vvip_1hours = $ttl_ttr_vvip_2hours = $ttl_ttr_vvip_3hours = $ttl_ttr_vvip_3plus_hours =
+        $jml_ttr_diamond = $ttl_ttr_diamond_1hours = $ttl_ttr_diamond_2hours = $ttl_ttr_diamond_3hours = $ttl_ttr_diamond_3plus_hours =
+        $jml_ttr_platinum = $ttl_ttr_platinum_1hours = $ttl_ttr_platinum_3hours = $ttl_ttr_platinum_6hours = $ttl_ttr_platinum_6plus_hours =
+        $jml_ttr_gsr = $ttl_ttr_gsr_6hours = $ttl_ttr_gsr_12hours = $ttl_ttr_gsr_24hours = $ttl_ttr_gsr_36hours =
+        $jml_ttr_manja = $ttl_ttr_manja_1hours = $ttl_ttr_manja_2hours = $ttl_ttr_manja_3hours = $ttl_ttr_manja_3plus_hours = 0;
+
+        $data = DashboardModel::ttr_comply_notcomply_closed();
+
+        $result = ['data' => [], 'footer' => []];
+
+        foreach ($data as $k => $v)
+        {
+            $jml_ttr_vvip                 =  $v->ttr_vvip_1hours + $v->ttr_vvip_2hours + $v->ttr_vvip_3hours + $v->ttr_vvip_3plus_hours;
+            $ttl_ttr_vvip_1hours          += $v->ttr_vvip_1hours;
+            $ttl_ttr_vvip_2hours          += $v->ttr_vvip_2hours;
+            $ttl_ttr_vvip_3hours          += $v->ttr_vvip_3hours;
+            $ttl_ttr_vvip_3plus_hours     += $v->ttr_vvip_3plus_hours;
+
+            $jml_ttr_diamond              =  $v->ttr_diamond_1hours + $v->ttr_diamond_2hours + $v->ttr_diamond_3hours + $v->ttr_diamond_3plus_hours;
+            $ttl_ttr_diamond_1hours       += $v->ttr_diamond_1hours;
+            $ttl_ttr_diamond_2hours       += $v->ttr_diamond_2hours;
+            $ttl_ttr_diamond_3hours       += $v->ttr_diamond_3hours;
+            $ttl_ttr_diamond_3plus_hours  += $v->ttr_diamond_3plus_hours;
+
+            $jml_ttr_platinum             =  $v->ttr_platinum_1hours + $v->ttr_platinum_3hours + $v->ttr_platinum_6hours + $v->ttr_platinum_6plus_hours;
+            $ttl_ttr_platinum_1hours      += $v->ttr_platinum_1hours;
+            $ttl_ttr_platinum_3hours      += $v->ttr_platinum_3hours;
+            $ttl_ttr_platinum_6hours      += $v->ttr_platinum_6hours;
+            $ttl_ttr_platinum_6plus_hours += $v->ttr_platinum_6plus_hours;
+
+            $jml_ttr_gsr                  =  $v->ttr_gsr_6hours + $v->ttr_gsr_12hours + $v->ttr_gsr_24hours + $v->ttr_gsr_36hours;
+            $ttl_ttr_gsr_6hours           += $v->ttr_gsr_6hours;
+            $ttl_ttr_gsr_12hours          += $v->ttr_gsr_12hours;
+            $ttl_ttr_gsr_24hours          += $v->ttr_gsr_24hours;
+            $ttl_ttr_gsr_36hours          += $v->ttr_gsr_36hours;
+
+            $jml_ttr_manja                =  $v->ttr_manja_1hours + $v->ttr_manja_2hours + $v->ttr_manja_3hours + $v->ttr_manja_3plus_hours;
+            $ttl_ttr_manja_1hours         += $v->ttr_manja_1hours;
+            $ttl_ttr_manja_2hours         += $v->ttr_manja_2hours;
+            $ttl_ttr_manja_3hours         += $v->ttr_manja_3hours;
+            $ttl_ttr_manja_3plus_hours    += $v->ttr_manja_3plus_hours;
+
+            $result['data'][$k][] = $v->witel;
+            
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_vvip_1hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_vvip_2hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_vvip_3hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_vvip_3plus_hours));
+
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_diamond_1hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_diamond_2hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_diamond_3hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_diamond_3plus_hours));
+
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_platinum_1hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_platinum_3hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_platinum_6hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_platinum_6plus_hours));
+
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_gsr_6hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_gsr_12hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_gsr_24hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_gsr_36hours));
+
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_manja_1hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_manja_2hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_manja_3hours));
+            $result['data'][$k][] = str_replace(',', '.', number_format($v->ttr_manja_3plus_hours));
+        }
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_vvip_1hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_vvip_2hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_vvip_3hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_vvip_3plus_hours)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_diamond_1hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_diamond_2hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_diamond_3hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_diamond_3plus_hours)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_platinum_1hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_platinum_3hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_platinum_6hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_platinum_6plus_hours)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_gsr_6hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_gsr_12hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_gsr_24hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_gsr_36hours)).'</b>';
+
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_manja_1hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_manja_2hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_manja_3hours)).'</b>';
+        $result['footer'][] = '<b>'.str_replace(',', '.', number_format($ttl_ttr_manja_3plus_hours)).'</b>';
 
         return response()->json($result);
     }
@@ -717,19 +854,19 @@ class AjaxController extends Controller
         $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_orbit&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_orbit.'</a></b>';
         $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_addon&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_addon.'</a></b>';
         $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_pda&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_pda.'</a></b>';
-        $result['footer'][] = $ttl_sisa_order;
+        $result['footer'][] = '<b>'.$ttl_sisa_order.'</b>';
 
         $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=ps_ao&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_ps_ao.'</a></b>';
         $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=ps_orbit&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_ps_orbit.'</a></b>';
         $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=ps_addon&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_ps_addon.'</a></b>';
         $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=ps_pda&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_ps_pda.'</a></b>';
-        $result['footer'][] = $ttl_ps;
+        $result['footer'][] = '<b>'.$ttl_ps.'</b>';
 
         $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_kp&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_kp.'</a></b>';
         $result['footer'][] = '<b><a href="/dashboard/productivity-sector-detail?sektor=all&status=order_kt&start_date='.$start_date.'&end_date='.$end_date.'" style="color: black">'.$ttl_order_kt.'</a></b>';
-        $result['footer'][] = $ttl_order_kendala;
+        $result['footer'][] = '<b>'.$ttl_order_kendala.'</b>';
 
-        $result['footer'][] = $ttl_point;
+        $result['footer'][] = '<b>'.$ttl_point.'</b>';
 
         return response()->json($result);
     }

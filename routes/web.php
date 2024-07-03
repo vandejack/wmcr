@@ -89,8 +89,9 @@ Route::group(['middleware' => 'auth'], function () {
         });
 
         Route::prefix('dashboard')->group(function () {
-            Route::get('/ttr-hvc', 'AjaxController@trr_hvc');
             Route::get('/productivity-order', 'AjaxController@productivity_order');
+            Route::get('/ttr-comply-notcomply-open', 'AjaxController@ttr_comply_notcomply_open');
+            Route::get('/ttr-comply-notcomply-closed', 'AjaxController@ttr_comply_notcomply_closed');
             Route::get('/productivity-provisioning', 'AjaxController@dashboard_produktif');
         });
     });
