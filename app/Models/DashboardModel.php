@@ -402,7 +402,7 @@ class DashboardModel
             wsi.witel,
 
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_VVIP'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 60) 
@@ -410,7 +410,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_vvip_1hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_VVIP'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 60 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 120) 
@@ -418,7 +418,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_vvip_2hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_VVIP'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 120 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 180) 
@@ -426,7 +426,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_vvip_3hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_VVIP'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 180) 
                 THEN 1 
@@ -434,7 +434,7 @@ class DashboardModel
             END) AS ttr_vvip_3plus_hours,
 
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_DIAMOND'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 60) 
@@ -442,7 +442,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_diamond_1hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_DIAMOND'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 60 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 120) 
@@ -450,7 +450,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_diamond_2hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_DIAMOND'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 120 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 180) 
@@ -458,7 +458,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_diamond_3hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_DIAMOND'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 180) 
                 THEN 1 
@@ -466,7 +466,7 @@ class DashboardModel
             END) AS ttr_diamond_3plus_hours,
 
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_PLATINUM'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 60) 
@@ -474,7 +474,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_platinum_1hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_PLATINUM'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 60 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 180) 
@@ -482,7 +482,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_platinum_3hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_PLATINUM'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 180 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 360) 
@@ -490,7 +490,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_platinum_6hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type = 'HVC_PLATINUM'
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 360) 
                 THEN 1 
@@ -498,7 +498,7 @@ class DashboardModel
             END) AS ttr_platinum_6plus_hours,
 
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) >= 0 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 360) 
@@ -506,7 +506,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_gsr_6hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 360 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 720) 
@@ -514,7 +514,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_gsr_12hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 720 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 1440) 
@@ -522,7 +522,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_gsr_24hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.customer_type IN ('HVC_GOLD', 'HVC_SILVER', 'REGULER')
                 AND (TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) > 1440 
                 AND TIMESTAMPDIFF(MINUTE, $reported_date, $datenow) <= 2160)
@@ -531,7 +531,7 @@ class DashboardModel
             END) AS ttr_gsr_36hours,
 
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.booking_date != '0000-00-00 00:00:00'
                 AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) >= 0 
                 AND TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) <= 60) 
@@ -539,7 +539,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_manja_1hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.booking_date != '0000-00-00 00:00:00'
                 AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) > 60 
                 AND TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) <= 120) 
@@ -547,7 +547,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_manja_2hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.booking_date != '0000-00-00 00:00:00'
                 AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) > 120 
                 AND TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) <= 180) 
@@ -555,7 +555,7 @@ class DashboardModel
                 ELSE 0 
             END) AS ttr_manja_3hours,
             SUM(CASE 
-                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM', 'CLOSED') 
+                WHEN wsi.status IN ('FINALCHECK', 'RESOLVED', 'MEDIACARE', 'SALAMSIM') 
                 AND wsi.booking_date != '0000-00-00 00:00:00'
                 AND (TIMESTAMPDIFF(MINUTE, $booking_date, $datenow) > 180) 
                 THEN 1 

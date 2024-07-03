@@ -157,7 +157,7 @@
 <div class="card shadow-sm">
 	<div class="card-body pb-4">
         <h3>Time To Repair (TTR)</h3>
-        <p class="text-muted" style="font-size: 10px">FINALCHECK, RESOLVED, MEDIACARE, SALAMSIM, CLOSED</p>
+        <p class="text-muted" style="font-size: 10px">FINALCHECK, RESOLVED, MEDIACARE, SALAMSIM</p>
         <div class="table-responsive">
             <table class="table table-hover table-row-bordered gy-5 border rounded w-100" id="ttr_comply_notcomply_closed">
                 <thead>
