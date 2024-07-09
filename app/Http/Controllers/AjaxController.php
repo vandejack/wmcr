@@ -120,103 +120,69 @@ class AjaxController extends Controller
     public function sector_data($id)
     {
         $result['data'] = [];
-        $columns = [];
-        $editLink = '';
 
         $data = SectorModel::show($id);
 
-        switch ($id) {
-            case 'list':
-                    $columns = ['name', 'group_chat_id', 'owner1_name', 'owner2_name', 'rayon_name'];
-                    $editLink = '/sector/edit/';
-                break;
-            
-            case 'rayon':
-                    $columns = ['name', 'owner_name', 'manager_name'];
-                break;
-            
-            case 'team':
-                    $columns = ['sector_name', 'name', 'technician1_name', 'technician2_name'];
-                break;
-
-            case 'alpro':
-                    $columns = ['sector_name', 'name'];
-                break;
-
-            case 'schedule':
-                    $columns = ['technician_name', 'date'];
-                break;
-
-            case 'brifieng':
-                    $columns = ['name', 'date'];
-                break;
-            
-            case 'alker':
-                    $columns = [];
-                break;
-        }
-
-        foreach ($data as $k => $v) {
-            $rowData = [];
-
-            foreach ($columns as $column)
-            {
-                if ($column == 'owner1_name' && isset($v->owner1_name) && isset($v->owner1))
-                {
-                    $owner1Info = $v->owner1_name . ' (' . $v->owner1 . ')';
-                    $rowData[] = $owner1Info;
-                }
-
-                if ($column == 'owner2_name' && isset($v->owner2_name) && isset($v->owner2))
-                {
-                    $owner2Info = $v->owner2_name . ' (' . $v->owner2 . ')';
-                    $rowData[] = $owner2Info;
-                }
-
-                if ($column == 'owner_name' && isset($v->owner_name) && isset($v->owner))
-                {
-                    $ownerInfo = $v->owner_name . ' (' . $v->owner . ')';
-                    $rowData[] = $ownerInfo;
-                }
-
-                if ($column == 'manager_name' && isset($v->manager_name) && isset($v->manager))
-                {
-                    $managerInfo = $v->manager_name . ' (' . $v->manager . ')';
-                    $rowData[] = $managerInfo;
-                }
-
-                if ($column == 'technician1_name' && isset($v->technician1_name) && isset($v->technician1))
-                {
-                    $technician1Info = $v->technician1_name . ' (' . $v->technician1 . ')';
-                    $rowData[] = $technician1Info;
-                }
-
-                if ($column == 'technician2_name' && isset($v->technician2_name) && isset($v->technician2))
-                {
-                    $technician2Info = $v->technician2_name . ' (' . $v->technician2 . ')';
-                    $rowData[] = $technician2Info;
-                }
-
-                if ($column == 'technician_name' && isset($v->technician_name) && isset($v->technician))
-                {
-                    $technicianInfo = $v->technician_name . ' (' . $v->technician . ')';
-                    $rowData[] = $technicianInfo;
-                }
-
-                $rowData[] = $v->$column;
-
-                if ($column == 'name' && $editLink !== '')
-                {
-                    $editButton =
-                    '<a href="' . $editLink . $v->id . '" type="button" class="btn btn-icon btn-sm btn-primary btn-rounded text-center">' .
-                        '<i class="fa fa-edit" aria-hidden="true"></i>' .
-                    '</a>';
-                    $rowData[] = $editButton;
-                }
+        foreach ($data as $k => $v)
+        {
+            switch ($id) {
+                case 'list':
+                        $result['data'][] = [
+                            ++$k,
+                            $v->name,
+                            $v->group_chat_id,
+                            $v->owner1_name . ' (' . $v->owner1 . ')',
+                            $v->owner2_name . ' (' . $v->owner2 . ')',
+                            $v->rayon_name,
+                            '<a href="/sector/edit/'.$v->id.'" type="button" class="btn btn-icon btn-sm btn-primary btn-rounded text-center">' .
+                                    '<i class="fa fa-edit" aria-hidden="true"></i>' .
+                            '</a>'
+                        ];
+                    break;
+                case 'rayon':
+                        $result['data'][] = [
+                            ++$k,
+                            $v->name,
+                            $v->owner_name . ' (' . $v->owner . ')',
+                            $v->manager_name . ' (' . $v->manager . ')'
+                        ];
+                    break;
+                case 'team':
+                        $result['data'][] = [
+                            ++$k,
+                            $v->sector_name,
+                            $v->name,
+                            $v->technician1_name . ' (' . $v->technician1 . ')',
+                            $v->technician2_name . ' (' . $v->technician2 . ')',
+                        ];
+                    break;
+                case 'alpro':
+                        $result['data'][] = [
+                            ++$k,
+                            $v->sector_name,
+                            $v->name
+                        ];
+                    break;
+                case 'schedule':
+                        $result['data'][] = [
+                            ++$k,
+                            $v->technician_name . ' (' . $v->technician . ')',
+                            $v->date
+                        ];
+                    break;
+                case 'brifieng':
+                        $result['data'][] = [
+                            ++$k,
+                            $v->name,
+                            $v->date
+                        ];
+                    break;
+                case 'alker':
+                        $result['data'][] = [
+                            ++$k
+                        ];
+                    break;
             }
-
-            array_unshift($rowData, ++$k);
-            $result['data'][] = $rowData;
         }
 
         return response()->json($result);

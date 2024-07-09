@@ -38,15 +38,15 @@
             <table class="table table-hover table-row-bordered gy-5 border rounded w-100" id="productivity_order">
                 <thead>
                     <tr class="fw-bold fs-6 text-gray-800 px-7 text-center">
-                        <th rowspan="3" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">WITEL</th>
-                        <th colspan="10" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">PROVISIONING</th>
-                        <th colspan="17" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">ASSURANCE</th>                        
+                        <th rowspan="3" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">WITEL</th>
+                        <th colspan="10" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">PROVISIONING</th>
+                        <th colspan="17" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">ASSURANCE</th>                        
                     </tr>
                     <tr>
-                        <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TSEL</th>
-                        <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">TLKM</th>
-                        <th colspan="8" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">B2C</th>
-                        <th colspan="9" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white">B2B</th>
+                        <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">TSEL</th>
+                        <th colspan="5" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">TLKM</th>
+                        <th colspan="8" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">B2C</th>
+                        <th colspan="9" class="center" style="font-weight: bold; background-color: rgb(10, 189, 227); color: white; padding-right: 0px;">B2B</th>
                     </tr>
                     <tr>
                         @for ($i = 0; $i < 2; $i ++)
