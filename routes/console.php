@@ -21,3 +21,9 @@ Artisan::command('inspire', function () {
 Artisan::command('alert_ttr_customer {witel} {status}', function ($witel, $status) {
 	OrderController::alert_ttr_customer($witel, $status);
 });
+Artisan::command('starclick_to_basket {witel} {tipe} {date}', function ($witel, $tipe, $date) {
+	OrderController::starclick_to_basket($witel, $tipe, $date);
+});
+Artisan::command('insera_to_basket {witel} {date}', function ($witel, $date) {
+	OrderController::insera_to_basket($witel, $date);
+});
