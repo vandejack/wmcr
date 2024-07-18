@@ -10,6 +10,8 @@ class DashboardModel
 {
     public static function productivity_order()
     {
+        $query = [];
+        
         $witel = DB::table('wmcr_master_witel')->get();
 
         $query1 = DB::table('wmcr_source_kpro_provi AS wskp')
