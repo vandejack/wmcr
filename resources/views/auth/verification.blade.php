@@ -6,23 +6,16 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
-		<link href="assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-		<link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+		<link href="/assets/metronic8.2.6/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
+		<link href="/assets/metronic8.2.6/css/style.bundle.css" rel="stylesheet" type="text/css" />>
 	</head>
 	<body id="kt_body" class="bg-body">
+		<script>var defaultThemeMode = "system"; var themeMode; if ( document.documentElement ) { if ( document.documentElement.hasAttribute("data-bs-theme-mode")) { themeMode = document.documentElement.getAttribute("data-bs-theme-mode"); } else { if ( localStorage.getItem("data-bs-theme") !== null ) { themeMode = localStorage.getItem("data-bs-theme"); } else { themeMode = defaultThemeMode; } } if (themeMode === "system") { themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } document.documentElement.setAttribute("data-bs-theme", themeMode); }</script>
+		
 		<div class="d-flex flex-column flex-root">
 			<div class="d-flex flex-column flex-lg-row flex-column-fluid">
 				<div class="d-flex flex-column flex-lg-row-auto w-xl-600px positon-xl-relative" style="background-color: #F2C98A">
 					<div class="d-flex flex-column position-xl-fixed top-0 bottom-0 w-xl-600px scroll-y">
-						<div class="d-flex flex-row-fluid flex-column text-center p-10 pt-lg-20">
-							<a href="#" class="py-9 mb-5">
-								<img alt="Logo" src="assets/media/logos/logo-2.svg" class="h-60px" />
-							</a>
-							<h1 class="fw-bolder fs-2qx pb-5 pb-md-10" style="color: #986923;">Workforce Management Common Resources</h1>
-							<p class="fw-bold fs-2" style="color: #986923;">Discover Amazing Metronic
-							<br />with great build tools</p>
-						</div>
-						<div class="d-flex flex-row-auto bgi-no-repeat bgi-position-x-center bgi-size-contain bgi-position-y-bottom min-h-100px min-h-lg-350px" style="background-image: url(/assets/media/illustrations/sigma-1/13.png"></div>
 					</div>
 				</div>
 				<div class="d-flex flex-column flex-lg-row-fluid py-10">
@@ -45,12 +38,7 @@
 								<div class="mb-10 px-md-10">
 									<div class="fw-bolder text-start text-dark fs-6 mb-1 ms-1">Type your 6 digit security code</div>
 									<div class="d-flex flex-wrap flex-stack">
-										<input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxlength="1" class="form-control form-control-solid h-60px w-60px fs-2qx text-center border-primary border-hover mx-1 my-2" name="otp_code[1]" required inputmode="numeric"/>
-                                        <input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxlength="1" class="form-control form-control-solid h-60px w-60px fs-2qx text-center border-primary border-hover mx-1 my-2" name="otp_code[2]" required inputmode="numeric"/>
-                                        <input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxlength="1" class="form-control form-control-solid h-60px w-60px fs-2qx text-center border-primary border-hover mx-1 my-2" name="otp_code[3]" required inputmode="numeric"/>
-                                        <input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxlength="1" class="form-control form-control-solid h-60px w-60px fs-2qx text-center border-primary border-hover mx-1 my-2" name="otp_code[4]" required inputmode="numeric"/>
-                                        <input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxlength="1" class="form-control form-control-solid h-60px w-60px fs-2qx text-center border-primary border-hover mx-1 my-2" name="otp_code[5]" required inputmode="numeric"/>
-                                        <input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxlength="1" class="form-control form-control-solid h-60px w-60px fs-2qx text-center border-primary border-hover mx-1 my-2" name="otp_code[6]" required inputmode="numeric"/>
+										<input type="text" class="form-control" name="otp" inputmode="numeric" />
 									</div>
 								</div>
 								<div class="d-flex flex-center">

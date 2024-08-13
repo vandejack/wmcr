@@ -74,7 +74,7 @@
 			"pagingType": "full_numbers",
             "ordering": false,
             "ajax": {
-				"url": `/ajax/sector/list`
+				"url": `/ajax/sector/list/ALL`
 			}
 		});
     });

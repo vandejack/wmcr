@@ -8,15 +8,18 @@ date_default_timezone_set("Asia/Makassar");
 
 class SectorModel
 {
-    public static function show($id)
+    public static function show($type,$id)
     {
-        switch ($id) {
+        switch ($type) {
             case 'list':
                     $data = DB::table('wmcr_sector AS ws')
                     ->leftJoin('wmcr_employee AS weo1', 'ws.owner1', '=', 'weo1.nik')
                     ->leftJoin('wmcr_employee AS weo2', 'ws.owner2', '=', 'weo2.nik')
                     ->leftJoin('wmcr_sector_rayon AS wcr', 'ws.rayon_id', '=', 'wcr.id')
-                    ->select('ws.*', 'weo1.name AS owner1_name', 'weo2.name AS owner2_name', 'wcr.name AS rayon_name');
+                    ->select('ws.*', 'weo1.name AS owner1_name', 'weo2.name AS owner2_name', 'wcr.name AS rayon_name')
+                    ->when($id<>"ALL",function ($query,$id){
+                        return $query->where('ws.witel_id','=', $id);
+                    });
                 break;
             
             case 'rayon':
@@ -55,5 +58,6 @@ class SectorModel
 
         return $data->get();
     }
+
 }
 ?>

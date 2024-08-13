@@ -59,6 +59,42 @@ class EmployeeModel
         return $data->get();
     }
 
+    public static function show_with_id($type,$id)
+    {
+        switch ($type) {
+            case 'list':
+                    $data = DB::table('wmcr_employee')
+                    ->leftJoin('wmcr_master_regional', 'wmcr_employee.regional_id', '=', 'wmcr_master_regional.id')
+                    ->leftJoin('wmcr_master_witel', 'wmcr_employee.witel_id', '=', 'wmcr_master_witel.id')
+                    ->leftJoin('wmcr_master_mitra', 'wmcr_employee.mitra_id', '=', 'wmcr_master_mitra.id')
+                    ->leftJoin('wmcr_employee_unit', 'wmcr_employee.unit_id', '=', 'wmcr_employee_unit.id')
+                    ->leftJoin('wmcr_employee_sub_unit', 'wmcr_employee.sub_unit_id', '=', 'wmcr_employee_sub_unit.id')
+                    ->leftJoin('wmcr_employee_sub_group', 'wmcr_employee.sub_group_id', '=', 'wmcr_employee_sub_group.id')
+                    ->leftJoin('wmcr_employee_position', 'wmcr_employee.position_id', '=', 'wmcr_employee_position.id')
+                    ->leftJoin('wmcr_master_level', 'wmcr_employee.level_id', '=', 'wmcr_master_level.id')
+                    ->leftJoin('wmcr_employee_flagging','wmcr_employee.flagging_id','=','wmcr_employee_flagging.flagging_id')
+                    ->select(
+                        'wmcr_employee.*',
+                        'wmcr_master_regional.name AS regional_name',
+                        'wmcr_master_witel.name AS witel_name',
+                        'wmcr_master_mitra.name AS mitra_name',
+                        'wmcr_employee_unit.name AS unit_name',
+                        'wmcr_employee_sub_unit.name AS sub_unit_name',
+                        'wmcr_employee_sub_group.name AS sub_group_name',
+                        'wmcr_employee_position.name AS position_name',
+                        'wmcr_employee_flagging.flagging AS flagging',
+                        'wmcr_master_level.name AS level_name'
+                    )
+                    ->where('wmcr_employee.position_id','=','116')
+                    ->where('wmcr_employee.sector_id','=', $id);
+                  
+                break;
+                default : 
+                break;
+        }
+        return $data->get();
+    }
+
     public static function profile_data()
     {
         return DB::table('wmcr_employee')

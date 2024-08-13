@@ -117,15 +117,15 @@ class AjaxController extends Controller
         return response()->json($result);   
     }
 
-    public function sector_data($id)
+    public function sector_data($type,$id)
     {
         $result['data'] = [];
 
-        $data = SectorModel::show($id);
+        $data = SectorModel::show($type,"ALL");
 
         foreach ($data as $k => $v)
         {
-            switch ($id) {
+            switch ($type) {
                 case 'list':
                         $result['data'][] = [
                             ++$k,
@@ -224,6 +224,14 @@ class AjaxController extends Controller
                 break;
         }
 
+        return response()->json($data);
+    }
+
+    public function getSector($id){
+        $data = DB::table('wmcr_sector')
+                ->where('is_active',1)
+                ->where('witel_id',$id)
+                ->get();
         return response()->json($data);
     }
 

@@ -139,7 +139,7 @@ class LoginController extends Controller
 
     public function login_post(Request $req)
     {
-        $otp_code        = $req->input('otp_code')[1].$req->input('otp_code')[2].$req->input('otp_code')[3].$req->input('otp_code')[4].$req->input('otp_code')[5].$req->input('otp_code')[6];
+        $otp_code        = $req->input('otp');
         $otp_valid_until = $req->input('otp_valid_until');
 
         if (date('Y-m-d H:i:s') > $otp_valid_until)

@@ -10,7 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::post('/telegram/webhook', 'TelegramController@handleWebhook');
+Route::get('/telegram/test', 'TelegramController@testz');
+Route::get('/mapcalculate', 'IhldController@adjustCoordinates');
 Route::get('/login', 'LoginController@login')->name('login');
 Route::post('/login', 'LoginController@login_validate');
 
@@ -21,10 +23,18 @@ Route::post('/auth-verification', 'LoginController@login_post');
 
 
 Route::group(['middleware' => 'auth'], function () {
+
     Route::get('/', 'HomeController@index')->name('home');
+    Route::post('/save-location','HomeController@saveLocation');
 
     Route::get('/profile', 'EmployeeController@profile')->name('profile');
     Route::post('/profile', 'EmployeeController@profile_post');
+
+    Route::prefix('ihld')->group(function () {
+        Route::get('/uploadForm', 'IhldController@uploadForm');
+        Route::post('/uploadForm', 'IhldController@upload');
+        Route::get('/preview', 'IhldController@preview');
+    });
 
     Route::prefix('master')->group(function () {
         Route::get('/regional', 'MasterController@regional');
@@ -33,6 +43,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/sto/edit/{id}', 'MasterController@sto');
         Route::get('/mitra', 'MasterController@mitra');
         Route::get('/level', 'MasterController@level');
+        Route::get('/importODPPreview', 'MasterController@importODPPreview');
+        Route::get('/odpUpdate', 'MasterController@odpUpdate');
+        Route::post('/odpUpdate', 'MasterController@importData');
     });
 
     Route::prefix('employee')->group(function () {
@@ -57,12 +70,32 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/schedule', 'SectorController@schedule');
         Route::get('/brifieng', 'SectorController@brifieng');
         Route::get('/alker', 'SectorController@alker');
+        Route::get('/mapAlpro/{witel}','SectorController@mapAlpro');
+        Route::get('/odpSector/{witel}','SectorController@odpSector');
+        Route::post('/mapAlpro/{witel}','SectorController@saveOdpSector');
+    });
+
+    Route::prefix('schedule')->group(function () {
+        Route::get('/manage/{id}/{periode}', 'SchedulingController@manage');
+        Route::get('/list/{sector}/{status}/{periode}/{ishold}/{approval}', 'SchedulingController@list');
+        Route::get('/approval/{id}/{status}','SchedulingController@approval');
+        Route::get('/update/{id}','SchedulingController@update');
+        Route::post('/update/{id}','SchedulingController@updatePost');
+        Route::get('/trial','SchedulingController@trial');
     });
 
     Route::prefix('order')->group(function () {
+        Route::get('/assign/{id}','OrderController@assign'); 
+        Route::get('/basket/{witel}/{sektor}/{periode}', 'OrderController@basket');
+        Route::get('/basket/list/{order_type}/{witel}/{sektor}', 'OrderController@basketList');
+        Route::get('/ajaxBasket/{order_type}/{sektor}', 'OrderController@ajaxBasket');
+        Route::get('/sync_to_basket/{order_type}', 'OrderController@sync_to_basket');
         Route::get('/ticket/{id}', 'OrderController@ticket');
+        Route::get('/dispatchManual/{id}/{periode}','OrderController@dispatchManual');
+        Route::post('/dispatchManual/{id}/{periode}','OrderController@dispatchSave');
+        Route::post('/dispatchSave','OrderController@dispatchSave');
         Route::post('/ticket/{id}', 'OrderController@ticket_post');
-        
+        Route::get('/dispatchAjax/{teamID}/{date}/{start}/{end}/{orderID}','OrderController@dispatchAjax');
         Route::get('/search', 'OrderController@search');
         Route::post('/search', 'OrderController@search_post');
 
@@ -78,8 +111,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('ajax')->group(function () {
         Route::get('/master/{id}', 'AjaxController@master_data');
         Route::get('/employee/{id}', 'AjaxController@employee_data');
-        Route::get('/sector/{id}', 'AjaxController@sector_data');
-
+        Route::get('/sector/{type}/{id}', 'AjaxController@sector_data');
+        Route::get('/getSector/{id}','AjaxController@getSector');
         Route::get('/select2/{id}/{x}', 'AjaxController@select_data');
 
         Route::prefix('order')->group(function () {
@@ -95,6 +128,17 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/productivity-provisioning', 'AjaxController@dashboard_produktif');
         });
     });
+    Route::prefix('tech')->group(function(){
+        Route::get('/home','TechController@home');
+        Route::get('/orderview/{id}','TechController@orderView');
+        Route::post('/orderview/{id}','TechController@saveProv');
+        Route::get('/startProgress/{id}','TechController@startProgress');
+        Route::get('/absensi','TechController@absensi');
+        Route::get('/requestApproval','TechController@requestApproval');
+        Route::get('/location/{id}','TechController@location');
+    });
+
+    Route::get('/grab/starclick/{witel}','GrabController@WitelStarclicktoBasket');
 });
 
 Route::get('/logout', 'LoginController@logout')->name('logout');

@@ -8,12 +8,104 @@ use App\Models\DashboardModel;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Models\OrderModel;
+use App\Models\ScheduleModel; 
+use App\Models\SectorModel; 
+use App\Models\MasterModel; 
 use App\Models\Telegram;
 
 date_default_timezone_set("Asia/Makassar");
 
-class OrderController extends Controller
+class OrderController extends Controller 
 {
+    public function sync_to_basket($order_type){
+        $startDate              = '2024-07-01';
+        $endDate                = '2024-07-09';
+        $sync_order_starclick   = OrderModel::sync_to_basket($order_type,$startDate,$endDate);
+        print_r($sync_order_starclick);
+    }
+
+    public function basket($witel,$sector,$periode){
+        $getWitel  = MasterModel::show('witel');
+        $sectorList     = SectorModel::show('list',1);
+        $getSchedule = ScheduleModel::scheduleTeamGetbyDay($sector,$periode,'1','ALL','ALL');
+        $getScheduleTech = ScheduleModel::scheduleEmployeeGetbyDay($sector,$periode,'1','ALL','ALL');
+        $getApproval = ScheduleModel::scheduleEmployeeGetbyDay($sector,$periode,'1','1','ALL');
+        $getSuspend = ScheduleModel::scheduleEmployeeGetbyDay($sector,$periode,'1','2','ALL');
+        $getHold = ScheduleModel::scheduleEmployeeGetbyDay($sector,$periode,'1','3','1');
+        $getReadytoGo = ScheduleModel::scheduleEmployeeGetbyDay($sector,$periode,'1','1','1');
+        $tommorow = date('Y-m-d', strtotime($periode . ' +1 day'));
+        $getScheduleTommorow = ScheduleModel::scheduleEmployeeGetbyDay($sector,$tommorow,'1','ALL','ALL');
+        $getEmployee = ScheduleModel::employeeSector($sector);
+        $orderTimeslot = array();
+        $sectorDetail = DB::table('wmcr_sector')
+                        ->where('id',$sector)
+                        ->first();
+        if ($sectorDetail){
+            $sektorLatitude = $sectorDetail->latitude;
+            $sektorLongitude = $sectorDetail->longitude;
+        } else {
+            $sektorLatitude = '-3.318607';
+            $sektorLongitude = '114.594376';
+        }
+        $currentUrl = url()->current();
+        foreach ($getSchedule as $r) {
+            $query = DB::table('wmcr_order_dispatch')
+                        ->where('assigned_date',$periode)
+                        ->where('sector_team_id',$r->teamID)
+                        ->get();
+            $orderTimeslot[$r->teamID] = $query;
+        }
+        $orderTypeGetMain = OrderModel::orderTypeGet(1,$sector);
+        $orderTypeGetResp = OrderModel::orderTypeGet(2,$sector);
+        return view('order.basket',compact('sektorLatitude','sektorLongitude','currentUrl','orderTimeslot','tommorow','witel','getWitel','sector','getScheduleTech','getReadytoGo','getApproval','getSuspend','getHold','getScheduleTommorow','getSchedule','getEmployee','orderTypeGetMain','orderTypeGetResp','periode','sectorList'));
+    }
+
+    public function ajaxBasket($orderType,$sector){
+        $data = OrderModel::basketList($orderType,1,$sector);
+        return response()->json($data);        
+    }
+
+    public function dispatchManual($id,$periode){
+        $getBasket = OrderModel::getBasketbyID($id); 
+        $backUrl =  url()->previous();
+        $scheduleTeam = ScheduleModel::scheduleTeamGetbyDay($getBasket->sector_id,$periode,1,"ALL",0);
+        return view('order.dispatch',compact('id','getBasket','scheduleTeam','backUrl'));
+    }
+
+    public function dispatchAjax($team,$periode,$timeStart,$timeEnd,$orderID){
+        $exec = DB::table('wmcr_order_dispatch')
+                ->where('order_id',$orderID)
+                ->update([
+                    'sector_team_id' => $team,
+                    'assigned_date' => $periode,
+                    'timeStart' => $timeStart,
+                    'timeEnd' => $timeEnd,
+                    'updated_by' => session('auth')->nik
+                ]);
+        return $exec;
+    }
+
+    public function dispatchSave(Request $request){
+        $tryingtoSave = OrderModel::dispatchSave($request);
+        if ($tryingtoSave) {
+            $updateBasket = OrderModel::updateBasket($request->order_id,$tryingtoSave);
+            $status = "success";
+            $message = "Assign Successful";
+        } else {
+            $status = "error";
+            $message = "Assign Error";
+        }
+        $backUrl = $request->backUrl;
+        return redirect($backUrl)->with('alerts', [
+            ['type' => $status, 'text' => $message]
+        ]);;
+    }
+
+    public function basketList($order_type,$witel,$sektor){
+        $query = OrderModel::basketList($order_type,$witel,$sektor);
+        return view('order.basketList',compact('witel','sektor','query'));
+    }
+
     public function ticket($id)
     {
         return view('order.ticket', compact('id', 'data'));

@@ -6,7 +6,7 @@ date_default_timezone_set('Asia/Makassar');
 
 class Telegram
 {
-    const t0k3n = '7001728932:AAGZj6VGtqVTV00huMfyKjYROyVOem4YVyE';
+    const t0k3n = '7115473310:AAFoG4XRP6GFyujZa9XRiGZuSjth4uYZYV8';
 
     public static function sendMessage($chatID, $message)
     {

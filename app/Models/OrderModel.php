@@ -8,6 +8,108 @@ date_default_timezone_set("Asia/Makassar");
 
 class OrderModel
 {
+    public static function dispatchSave($request){
+        $check = DB::table('wmcr_order_dispatch')
+        ->where('order_id',$request->order_id)
+        ->first();
+        if (count($check)>0) {
+        $query = DB::table('wmcr_order_dispatch')
+                ->where('order_id',$request->order_id)
+                ->update([
+                    'order_type_id' => $request->order_type_id,
+                    'assigned_date' => $request->assigned_date,
+                    'timeStart' => $request->startTime,
+                    'timeEnd' => $request->endTime,
+                    'sector_team_id' => $request->team,
+                    'updated_by' => session('auth')->nik,
+                    'updated_at' => DB::raw('NOW()')
+                ]);
+        if ($query) { $exec = $check->id; } else { $exec = 0; }
+        } else {
+        $exec = DB::table('wmcr_order_dispatch')
+                ->insertGetId([
+                    'order_id' => $request->order_id,
+                    'order_type_id' => $request->order_type_id,
+                    'assigned_date' => $request->assigned_date,
+                    'timeStart' => $request->startTime,
+                    'timeEnd' => $request->endTime,
+                    'sector_team_id' => $request->team,
+                    'created_by' => session('auth')->nik
+                ]);
+        }
+        return $exec;
+    }
+    public static function updateBasket($order_id,$id){
+        return DB::table('wmcr_order_basket')
+                ->where('source_id',$order_id)
+                ->update([
+                    'dispatch' => 1,
+                    'dispatchId' => $id
+                ]);
+    }
+    public static function sync_to_basket($order_type,$start_date,$end_date){
+        switch ($order_type){
+            case "AO" :
+                $query = DB::SELECT('
+                SELECT * FROM wmcr_source_starclick a LEFT JOIN wmcr_sector_alpro b ON a.odp_name = b.name WHERE a.jenis_psb LIKE "%AO%" AND DATE(a.order_date)>"2024-06-31" AND a.sto IN ("PLE","BTB","TKI")
+                ');
+                return $query;
+            break;
+        }
+    }
+
+    public static function getBasketbyID($id){
+        return DB::table('wmcr_order_basket as a')
+                    ->leftJoin('wmcr_order_type as b','a.order_type_id','=','b.id')
+                    ->leftJoin('wmcr_sector as c','a.sector_id','=','c.id')
+                    ->select('a.*','b.*','c.name as sectorName','b.id as typeID')
+                    ->where('a.id',$id)
+                    ->first();
+    }
+
+    public static function orderTypeGet($type,$sector){
+        return DB::table('wmcr_order_type AS a')
+            ->select('a.name', 'a.id AS order_type', DB::raw('SUM(CASE WHEN b.dispatch IS NULL THEN 1 ELSE 0 END) AS jumlah'))
+            ->leftJoin('wmcr_order_basket AS b', 'a.id', '=', 'b.order_type_id')
+            ->where('a.type', $type)
+            ->where('b.sector_id', $sector)
+            ->groupBy('a.id')
+            ->orderBy('a.urutan')
+            ->get();
+    }
+
+    public static function basketList($order_type,$witel,$sektor){
+        
+        $cekOrderType = DB::table('wmcr_order_type')->where('id',$order_type)->first();
+        $orderSource = $cekOrderType->source;
+        switch ($orderSource){
+            case "wmcr_source_starclick" : 
+                $query = DB::SELECT('select a.*,b.customer_addr as ALAMAT,b.jenis_psb as JENISORDER,b.sto as STO, b.customer_name as NAME, b.odp_name as ODP,c.name as orderType,c.MH 
+                from wmcr_order_basket a 
+                left join wmcr_source_starclick b ON a.source_id = b.order_id 
+                left join wmcr_order_type c ON a.order_type_id = c.id
+                where a.dispatch is NULL AND  a.order_type_id = '.$order_type.' AND a.sector_id = '.$sektor.' group by a.source_id');
+            break;
+            case "wmcr_source_insera" : 
+                $query = DB::SELECT('select a.*, b.workzone as STO, b.customer_name as NAME, b.odp_name as ODP, b.summary as ALAMAT, c.name as JENISORDER,c.name as orderType,c.MH
+                    from wmcr_order_basket a
+                    left join wmcr_source_insera b ON a.source_id = b.incident_id 
+                    left join wmcr_order_type c ON a.order_type_id = c.id
+                    where a.dispatch is NULL AND  a.order_type_id = '.$order_type.' AND a.sector_id = '.$sektor.'');
+            break;
+            default :
+                $query = DB::SELECT('
+                    select a.*, NULL as STO, b.customer_name as NAME, NULL as ODP, NULL as ALAMAT, NULL as JENISORDER
+                    from wmcr_order_basket a 
+                    where a.dispatch is NULL AND a.order_type_id = '.$order_type.' AND a.sector_id = '.$sektor.' 
+                '); 
+            break;
+        }
+        
+
+        return $query;
+    }
+
     public static function search_post($type, $id)
     {
         switch ($type) {

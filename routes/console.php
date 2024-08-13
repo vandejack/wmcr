@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GrabController;
 use Illuminate\Foundation\Inspiring;
 use App\Http\Controllers\OrderController;
 
@@ -26,4 +27,14 @@ Artisan::command('starclick_to_basket {witel} {tipe} {date}', function ($witel, 
 });
 Artisan::command('insera_to_basket {witel} {date}', function ($witel, $date) {
 	OrderController::insera_to_basket($witel, $date);
+});
+Artisan::command('sctobasket {witel}', function ($witel) {
+	GrabController::WitelStarclicktoBasket($witel);
+});
+Artisan::command('sendsctobasket {id}', function ($id) {
+	GrabController::StarclicktoBasketbyID($id);
+});
+
+Artisan::command('sendorbit {id} {sector}', function ($id,$sector) {
+	GrabController::sendOrderOrbit($id,$sector);
 });
