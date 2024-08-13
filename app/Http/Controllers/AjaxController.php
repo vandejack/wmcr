@@ -234,6 +234,10 @@ class AjaxController extends Controller
                 ->get();
         return response()->json($data);
     }
+    public function getSectorExcept($id,$except){
+        $data = MasterModel::getSectorbyWitelwithExcept($id,$except);
+        return response()->json($data);
+    }
 
     public function undispatch_order($start_date, $end_date)
     {

@@ -44,6 +44,15 @@ class MasterModel
         return $data->get();
     }
 
+    public static function getSectorbyWitelwithExcept($id,$defaultSector){
+        return DB::table('wmcr_sector as a')
+                    ->leftJoin('wmcr_master_witel as b','a.witel_id','=','b.id')
+                    ->select('a.*')
+                    ->where('b.id',$id)
+                    ->where('a.id','!=',$defaultSector)
+                    ->get();
+    }
+
 
  
 }

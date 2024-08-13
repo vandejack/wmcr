@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\DB;
 class ScheduleModel
 {
     public static function sectorCheck($tech,$sector,$periode){
-        return DB::table('wmcr_sector_schedule')
-                    ->where('sector_id', $sector)
-                    ->where('technician', $tech)
-                    ->where('date', $periode)
+        return DB::table('wmcr_sector_schedule as a')
+                    ->leftJoin('wmcr_employee as b','a.technician','=','b.nik')
+                    ->where('b.sector_id', $sector)
+                    ->where('a.technician', $tech)
+                    ->where('a.date', $periode)
                     ->get();
     }
     public static function scheduleInsert($tech,$sectorID,$tgl){
@@ -25,7 +26,7 @@ class ScheduleModel
                     ]);
     }
     public static function scheduleGet($tech,$sector,$periode){
-        return DB::SELECT('select * from wmcr_sector_schedule a where a.technician = "'.$tech.'" AND a.sector_id = "'.$sector.'" AND date(`date`) = "'.$periode.'" ');
+        return DB::SELECT('select *,a.id from wmcr_sector_schedule a LEFT JOIN wmcr_employee b ON a.technician = b.nik where a.technician = "'.$tech.'" AND b.sector_id = "'.$sector.'" AND date(`date`) = "'.$periode.'" ');
     }
     public static function scheduleTeamGetbyDay($sector,$periode,$status,$approval,$isHold){
         if ($approval=="ALL"){
@@ -62,9 +63,14 @@ class ScheduleModel
     public static function scheduleStatusGet(){
         return DB::table('wmcr_sector_schedule_status')->get();
     }
+
     public static function scheduleGetbyID($id){
-        return DB::table('wmcr_sector_schedule')
-                ->where('id',$id)
+        return DB::table('wmcr_sector_schedule as a')
+                ->select('a.*','a.sector_id as bantekSector','b.sector_id as defaultSector','d.id as bantekWitel')
+                ->leftJoin('wmcr_employee as b', 'a.technician','=','b.nik')
+                ->leftJoin('wmcr_sector as c', 'a.sector_id','=','c.id')
+                ->leftJoin('wmcr_master_witel as d','c.witel_id','=','d.id')
+                ->where('a.id',$id)
                 ->first();
     }
     public static function list($sector,$status,$periode,$ishold,$approval){

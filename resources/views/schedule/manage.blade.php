@@ -128,6 +128,8 @@
                                         $status = @$scheduleData[$result->nik][date('Y-m-d',$date)]['status'];
                                         if ($status==1){
                                             $btnLabel = 'success';
+                                        }elseif ($status==3){
+                                            $btnLabel = 'warning';
                                         } else {
                                            
                                             $btnLabel = 'danger';

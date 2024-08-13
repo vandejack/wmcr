@@ -113,6 +113,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/employee/{id}', 'AjaxController@employee_data');
         Route::get('/sector/{type}/{id}', 'AjaxController@sector_data');
         Route::get('/getSector/{id}','AjaxController@getSector');
+        Route::get('/getSectorExcept/{id}/{idExcept}','AjaxController@getSectorExcept');
         Route::get('/select2/{id}/{x}', 'AjaxController@select_data');
 
         Route::prefix('order')->group(function () {

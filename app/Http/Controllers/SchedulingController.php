@@ -13,6 +13,7 @@ use App\Models\EmployeeModel;
 use App\Models\ScheduleModel;
 use App\Models\MasterModel;
 use App\Models\Telegram;
+use Carbon\Carbon;
 
 date_default_timezone_set("Asia/Makassar");
 
@@ -82,18 +83,35 @@ class SchedulingController extends Controller
     public function update($id){
         $scheduleStatus = ScheduleModel::scheduleStatusGet();
         $scheduleGetbyID = ScheduleModel::scheduleGetbyID($id);
+
+        // data 
         $nik = $scheduleGetbyID->technician;
         $periode = $scheduleGetbyID->date;
         $status = $scheduleGetbyID->status;
+        $defaultSector = $scheduleGetbyID->defaultSector;
+        $bantekWitel = $scheduleGetbyID->bantekWitel;
+        $bantekSector = $scheduleGetbyID->bantekSector;
+
+        
+        // get witel 
+        $getWitel  = MasterModel::show('witel');
+
+        // get sector by witel for bantek
+        $getSectorbyWitel = MasterModel::getSectorbyWitelwithExcept($bantekWitel,$defaultSector);
+
+
         $back_url =  url()->previous();
-        return view('schedule.update',compact('nik','periode','scheduleStatus','status','back_url'));
+        return view('schedule.update',compact('getWitel','nik','periode','scheduleStatus','status','back_url','defaultSector','bantekWitel','bantekSector','getSectorbyWitel'));
     }
 
     public function updatePost(Request $request, $id){
         $exec = DB::table('wmcr_sector_schedule')
                     ->where('id',$id)
                     ->update([
-                        'status' => $request->status
+                        'status' => $request->input('status'),
+                        'sector_id' => $request->input('sektor'),
+                        'schedule_update_by' => session('auth')->nik,
+                        'schedule_update_time' => Carbon::now()
                     ]);
         // return redirect('/schedule/manage/1/2024-07');
         return redirect($request->back_url);
