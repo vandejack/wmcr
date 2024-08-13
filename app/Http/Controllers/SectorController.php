@@ -61,7 +61,7 @@ class SectorController extends Controller
 
     public function odpSector($witel){
         $data = DB::table('wmcr_source_odp')
-                    ->select('id','odp_name as title','latitude as lat','longitude as lng')
+                    ->select('id','odp as title','latitude as lat','longitude as lng')
                     ->where('witel',$witel)
                     ->get();
         return response()->json(['locations' => $data]);
